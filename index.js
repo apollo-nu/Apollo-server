@@ -11,6 +11,9 @@ app.use(function(req, res, next) {
 	next();
 });
 
+const helmet = require("helmet");
+app.use(helmet());
+
 const env = "" + process.env.NODE_ENV;
 console.log("ENV: " + env);
 const config = require('./config/db')[env || "dev"];
