@@ -3,7 +3,7 @@ const creds = require("../secret.js");
 // Create separate database for production
 const config = {
     "dev":{
-        "host":"localhost:8081",
+        "host":"http://localhost:8081",
         "database":`mongodb+srv://cooperfbarth:${creds.mongoPW}@apollo-oq2zz.mongodb.net/test?retryWrites=true&w=majority`
     },
     "production":{

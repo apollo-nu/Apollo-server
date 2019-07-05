@@ -26,10 +26,10 @@ const DefaultController = require("./controllers/DefaultController");
 const SubjectController = require("./controllers/SubjectController");
 const UserController = require("./controllers/UserController");
 
-app.use("/course", CourseController);
+app.use("/courses", CourseController);
 app.use("", DefaultController);
-app.use("/subject", SubjectController);
-app.use("/user", UserController);
+app.use("/subjects", SubjectController);
+app.use("/users", UserController);
 
 const PORT = process.env.PORT || 8081;
 app.listen(PORT);

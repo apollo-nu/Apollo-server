@@ -39,10 +39,9 @@ router.route("/")
                 if (err) {
                     res.send(responseObject(false, err, []));
                 }
-                res.send(responseObject(true, "", []));
             })
         }
-
+        res.send(responseObject(true, "", []));
     })
     .delete((req, res) => {
         console.log("DELETE: /subjects");

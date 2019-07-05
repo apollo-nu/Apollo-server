@@ -1,6 +1,6 @@
 const axios = require("axios");
 const creds = require("../secret"); //use environmental variable instead
-const config = require('../config/db')["" + process.env.NODE_ENV || "dev"];
+const config = require('../config/db')["dev"]; //change this between prod/dev when needed
 
 COURSE_API_URL = "https://api.asg.northwestern.edu/subjects";
 APOLLO_API_URL = config.host + "/subjects";
@@ -11,9 +11,10 @@ axios.get(COURSE_API_URL, {
     }
 })
     .then(response => {
-        const subjects = response;
+        const subjects = response.data;
         axios.delete(APOLLO_API_URL)
             .then(response => {
+                response = response.data;
                 if (!response.ok) {
                     console.log(response.err);
                 } else {
@@ -21,6 +22,7 @@ axios.get(COURSE_API_URL, {
                         subjects: subjects
                     })
                         .then(response => {
+                            response = response.data;
                             if (!response.ok) {
                                 console.log(response.err);
                             }
