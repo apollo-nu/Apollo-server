@@ -53,3 +53,5 @@ router.route("/")
             res.send(responseObject(true, "", []));
         });
     })
+
+module.exports = router;
