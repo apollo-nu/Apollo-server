@@ -21,12 +21,26 @@ const config = require('./config/db')[env || "dev"];
 const mongoose = require('mongoose');
 mongoose.connect(config.database, { useNewUrlParser: true });
 
-//const NameController = require('./controllers/NameController');
+const CourseController = require("./controllers/CourseController");
+const DefaultController = require("./controllers/DefaultController");
+const SubjectController = require("./controllers/SubjectController");
+const UserController = require("./controllers/UserController");
 
-//app.use('/routeName', NameController);
+app.use("/course", CourseController);
+app.use("", DefaultController);
+app.use("/subject", SubjectController);
+app.use("/user", UserController);
 
 const PORT = process.env.PORT || 8081;
 app.listen(PORT);
 console.log('Application listening on PORT: ' + PORT);
+
+//ping heroku to keep app awake (sleeps after 30 mins)
+if (env === "production") {
+    const axios = require("axios");
+    setInterval(() => {
+        axios.get(config.host + "/");
+    }, 1750000);
+}
 
 module.exports = app;
