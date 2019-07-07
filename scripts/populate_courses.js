@@ -1,12 +1,26 @@
 const axios = require("axios");
-const creds = require("../secret"); //use environmental variable instead
 const config = require('../config/db')["dev"]; //change this between prod/dev when needed
 
 COURSE_API_URL = "https://api.asg.northwestern.edu/courses/";
 APOLLO_API_URL_SUBJECTS = config.host + "/subjects";
 APOLLO_API_URL_COURSES = config.host + "/courses";
 
-DEFAULT_TERMS = [4576, 4577, 4578, 4579]; //Fall 2018, Winter 2019, Spring 2019, Summer 2019
+DEFAULT_TERMS = [4720, 4730, 4740]; //Fall 2018, Winter 2019, Spring 2019
+
+function resetDatabase() {
+    axios.delete(APOLLO_API_URL_COURSES)
+        .then(response => {
+            response = response.data;
+            if (!response.ok) {
+                console.log(response.err);
+            } else {
+                getSubjects();
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        })
+}
 
 function getSubjects() {
     axios.get(APOLLO_API_URL_SUBJECTS)
@@ -15,7 +29,9 @@ function getSubjects() {
             if (!response.ok) {
                 console.log(response.err);
             } else {
-                getCourses(response.body.subjects);
+                for (let term of DEFAULT_TERMS) {
+                    getCourses(response.body.subjects, term);
+                }
             }
         })
         .catch(err => {
@@ -26,12 +42,12 @@ function getSubjects() {
 function getCourses(subjects) {
     let responseCount = 0;
     let courses = [];
-    //should be about 1400 queries; we only have 10000 per day, so be careful.
-    for (let subject of subjects) {
-        for (let term of DEFAULT_TERMS) {
+    //should be about 400 queries per term; we only have 10000 per day, so be careful.
+    for (let term of [DEFAULT_TERMS[2]]) {
+        for (let subject of subjects) {
             axios.get(COURSE_API_URL, {
                 params: {
-                    "key": creds.apiKey,
+                    "key": process.env.API_KEY,
                     "term": term,
                     "subject": subject.symbol
                 }
@@ -47,36 +63,26 @@ function getCourses(subjects) {
                     }
                 })
                 .catch(err => {
-                    console.log(err);
+                    console.log(`Could not retrieve data for subject ${subject.symbol}.`);
+                    if (++responseCount === subjects.length) {
+                        refreshCourses(courses);
+                    }
+                    //console.log(err);
                 })
         }
     }
 }
 
 function refreshCourses(courses) {
-    axios.delete(APOLLO_API_URL_COURSES)
+    axios.post(APOLLO_API_URL_COURSES, {
+        courses: courses
+    })
         .then(response => {
             response = response.data;
             if (!response.ok) {
                 console.log(response.err);
-            } else {
-                axios.post(APOLLO_API_URL_COURSES, {
-                    courses: courses
-                })
-                    .then(response => {
-                        response = response.data;
-                        if (!response.ok) {
-                            console.log(response.err);
-                        } else {
-                            console.log(response);
-                        }
-                    })
             }
-        })
-        .catch(err => {
-            console.log(err);
         })
 }
 
-getSubjects();
-module.exports = getSubjects;
+module.exports = resetDatabase;

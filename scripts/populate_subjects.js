@@ -1,5 +1,4 @@
 const axios = require("axios");
-const creds = require("../secret"); //use environmental variable instead
 const config = require('../config/db')["dev"]; //change this between prod/dev when needed
 
 COURSE_API_URL = "https://api.asg.northwestern.edu/subjects";
@@ -8,7 +7,7 @@ APOLLO_API_URL = config.host + "/subjects";
 function getSubjects() {
     axios.get(COURSE_API_URL, {
         params: {
-            "key": creds.apiKey
+            "key": process.env.API_KEY
         }
     })
         .then(response => {

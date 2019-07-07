@@ -2,8 +2,8 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
+app.use(bodyParser.json({limit: '10mb', extended: true}));
 
 app.use(function(req, res, next) {
 	res.header("Access-Control-Allow-Origin", "*");
@@ -42,5 +42,14 @@ if (env === "production") {
         axios.get(config.host + "/");
     }, 1750000);
 }
+
+//set populate_subjects and populate_courses timers
+/*setInterval(() => {
+    require("./scripts/populate_subjects")();
+}, 31536000000);
+
+setInterval(() => {
+    require("./scripts/populate_courses")();
+}, 604800000);*/
 
 module.exports = app;
