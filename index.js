@@ -14,6 +14,9 @@ app.use(function(req, res, next) {
 const helmet = require("helmet");
 app.use(helmet());
 
+const dotenv = require("dotenv");
+dotenv.config();
+
 const env = "" + process.env.NODE_ENV;
 console.log("ENV: " + env);
 const config = require('./config/db')[env || "dev"];
