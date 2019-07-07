@@ -2,10 +2,11 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 
-app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
-app.use(bodyParser.json({limit: '10mb', extended: true}));
+const bpConfig = {limit: '10mb', extended: true};
+app.use(bodyParser.urlencoded(bpConfig));
+app.use(bodyParser.json(bpConfig));
 
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
 	res.header("Access-Control-Allow-Origin", "*");
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	next();
@@ -38,21 +39,8 @@ const PORT = process.env.PORT || 8081;
 app.listen(PORT);
 console.log('Application listening on PORT: ' + PORT);
 
-//ping heroku to keep app awake (sleeps after 30 mins)
 if (env === "production") {
-    const axios = require("axios");
-    setInterval(() => {
-        axios.get(config.host + "/");
-    }, 1750000);
+    require("./scripts/set_timers")();
 }
-
-//set populate_subjects and populate_courses timers
-/*setInterval(() => {
-    require("./scripts/populate_subjects")();
-}, 31536000000);
-
-setInterval(() => {
-    require("./scripts/populate_courses")();
-}, 604800000);*/
 
 module.exports = app;
