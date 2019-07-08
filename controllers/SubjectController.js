@@ -2,33 +2,24 @@ const express = require("express");
 const router = express.Router();
 
 const Subject = require("../models/Subject");
-
-const responseObject = (ok, err, subjects) => {
-    return {
-        ok: ok,
-        err: err,
-        body: {
-            subjects: subjects
-        }
-    }
-}
+const response = require("../src/responseBody");
 
 router.route("/")
     .get((req, res) => {
         console.log("GET: /subjects");
-        Subject.find((err, responseObjects) => {
+        Subject.find((err, subjects) => {
             if (err) {
-                res.send(responseObject(false, err, []));
+                res.send(response(false, err, {subjects: []}));
             }
-            res.send(responseObject(true, "", responseObjects));
+            res.send(response(true, "", {subjects: subjects}));
         });
     })
     .post((req, res) => {
         console.log("POST: /subjects");
         if (!req.body) {
-            res.send(responseObject(false, "No HTTP body found for POST request.", []));
+            res.send(response(false, "No HTTP body found for POST request.", {subjects: []}));
         } else if (!req.body.subjects) {
-            res.send(responseObject(false, "HTTP body malformed: empty or missing 'subjects' field.", []));
+            res.send(response(false, "HTTP body malformed: empty or missing 'subjects' field.", {subjects: []}));
         }
         for (let bodySubject of req.body.subjects) {
             let subject = new Subject();
@@ -37,19 +28,19 @@ router.route("/")
 
             subject.save(err => {
                 if (err) {
-                    res.send(responseObject(false, err, []));
+                    res.send(response(false, err, {subjects: []}));
                 }
             })
         }
-        res.send(responseObject(true, "", []));
+        res.send(response(true, "", {subjects: []}));
     })
     .delete((req, res) => {
         console.log("DELETE: /subjects");
         Subject.deleteMany(err => {
             if (err) {
-                res.send(responseObject(false, err, []));
+                res.send(response(false, err, {subjects: []}));
             }
-            res.send(responseObject(true, "", []));
+            res.send(response(true, "", {subjects: []}));
         });
     })
 
