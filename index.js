@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 
+const dotenv = require("dotenv");
+dotenv.config();
+
 const bpConfig = {limit: '10mb', extended: true};
 app.use(bodyParser.urlencoded(bpConfig));
 app.use(bodyParser.json(bpConfig));
@@ -14,9 +17,6 @@ app.use((req, res, next) => {
 
 const helmet = require("helmet");
 app.use(helmet());
-
-const dotenv = require("dotenv");
-dotenv.config();
 
 const env = "" + process.env.NODE_ENV;
 console.log("ENV: " + env);
