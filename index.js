@@ -16,15 +16,16 @@ app.use(bodyParser.json(bpConfig));
 -token is passed in to each request as a header
 -users shouldn't need to log in if their token hasn't expired
 -if token has expired, log user out
+-handle errors on client-side
 */
 const response = require("./src/responseBody");
 const jwt = require("jsonwebtoken");
 app.use((req, res, next) => {
 	const token = req.headers["access-token"];
 	if (token) {
-		jwt.verify(token. process.env.JWT_SECRET, (err, decoded) => {
+		jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
 			if (err) {
-				res.send(false, "Invalid token.", {});
+				res.send(false, err, {});
 			} else {
 				req.decoded = decoded;
 				res.header("Access-Control-Allow-Origin", "*");

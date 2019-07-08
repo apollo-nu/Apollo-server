@@ -85,7 +85,15 @@ router.route("/login")
                 res.send(response(false, `No user with email ${email} found.`, {_id: user._id}));
             } else {
                 if (user.validateUser(req.body.password)) {
-                    const token = jwt.sign({check: true}, process.env.JWT_SECRET, {expiresIn: 1440});
+                    const payload = {
+                        id: user._id,
+                        issued: Date.now()
+                    }
+                    const options = {
+                        expiresIn: 10080 //1 week
+                    }
+                    const token = jwt.sign(payload, process.env.JWT_SECRET, options);
+
                     res.send(response(true, `User ${user._id} logged in.`, {
                         _id: user._id,
                         token: token
