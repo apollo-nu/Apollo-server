@@ -25,7 +25,7 @@ app.use((req, res, next) => {
 	if (token) {
 		jwt.verify(token, process.env.JWT_SECRET, err => {
 			if (err) {
-				res.send(false, err, {});
+				res.send(response(false, err, {}));
 			} else {
 				res.header("Access-Control-Allow-Origin", "*");
 				res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
