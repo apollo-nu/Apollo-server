@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+const jwt = require("jsonwebtoken");
+
 const User = require("../models/User");
 const response = require("../src/responseBody");
 
@@ -83,7 +85,11 @@ router.route("/login")
                 res.send(response(false, `No user with email ${email} found.`, {_id: user._id}));
             } else {
                 if (user.validateUser(req.body.password)) {
-                    res.send(response(true, `User ${user._id} logged in.`, {_id: user._id}));
+                    const token = jwt.sign({check: true}, process.env.JWT_SECRET, {expiresIn: 1440});
+                    res.send(response(true, `User ${user._id} logged in.`, {
+                        _id: user._id,
+                        token: token
+                    }));
                 } else {
                     res.send(response(false, "Failed to validate user.", {_id: user._id}));
                 }

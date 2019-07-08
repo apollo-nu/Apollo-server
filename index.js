@@ -11,24 +11,42 @@ const bpConfig = {limit: "10mb", extended: true};
 app.use(bodyParser.urlencoded(bpConfig));
 app.use(bodyParser.json(bpConfig));
 
+/*
+-token is given to client upon login and stored in the client
+-token is passed in to each request as a header
+-users shouldn't need to log in if their token hasn't expired
+-if token has expired, log user out
+*/
+const response = require("./src/responseBody");
+const jwt = require("jsonwebtoken");
 app.use((req, res, next) => {
-	res.header("Access-Control-Allow-Origin", "*");
-	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-	next();
+	const token = req.headers["access-token"];
+	if (token) {
+		jwt.verify(token. process.env.JWT_SECRET, (err, decoded) => {
+			if (err) {
+				res.send(false, "Invalid token.", {});
+			} else {
+				req.decoded = decoded;
+				res.header("Access-Control-Allow-Origin", "*");
+				res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+				next();
+			}
+		})
+	} else {
+		res.send(response(false, "No token provided", {}));
+	}
 });
 
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
-
-const jwt = require("jsonwebtoken");
 
 const helmet = require("helmet");
 app.use(helmet());
 
 const env = "" + process.env.NODE_ENV;
 console.log("ENV: " + env);
-const config = require('./config/db')[env || "dev"];
 
+const config = require('./config/db')[env || "dev"];
 const mongoose = require('mongoose');
 mongoose.connect(config.database, { useNewUrlParser: true });
 
