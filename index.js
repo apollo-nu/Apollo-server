@@ -1,11 +1,13 @@
-const express = require('express');
+"use strict";
+
+const express = require("express");
 const app = express();
-const bodyParser = require('body-parser');
 
 const dotenv = require("dotenv");
 dotenv.config();
 
-const bpConfig = {limit: '10mb', extended: true};
+const bodyParser = require("body-parser");
+const bpConfig = {limit: "10mb", extended: true};
 app.use(bodyParser.urlencoded(bpConfig));
 app.use(bodyParser.json(bpConfig));
 
@@ -14,6 +16,11 @@ app.use((req, res, next) => {
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	next();
 });
+
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
+const jwt = require("jsonwebtoken");
 
 const helmet = require("helmet");
 app.use(helmet());
@@ -37,7 +44,7 @@ app.use("/users", UserController);
 
 const PORT = process.env.PORT || 8081;
 app.listen(PORT);
-console.log('Application listening on PORT: ' + PORT);
+console.log("Application listening on PORT: " + PORT);
 
 if (env === "production") {
     require("./scripts/set_timers")();
