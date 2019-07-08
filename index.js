@@ -23,11 +23,10 @@ const jwt = require("jsonwebtoken");
 app.use((req, res, next) => {
 	const token = req.headers["access-token"];
 	if (token) {
-		jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+		jwt.verify(token, process.env.JWT_SECRET, err => {
 			if (err) {
 				res.send(false, err, {});
 			} else {
-				req.decoded = decoded;
 				res.header("Access-Control-Allow-Origin", "*");
 				res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 				next();
@@ -37,9 +36,6 @@ app.use((req, res, next) => {
 		res.send(response(false, "No token provided", {}));
 	}
 });
-
-const cookieParser = require("cookie-parser");
-app.use(cookieParser());
 
 const helmet = require("helmet");
 app.use(helmet());
