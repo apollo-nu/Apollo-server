@@ -5,4 +5,4 @@ const RowSchema = new Schema({
 
 });
 
-module.exports = mongoose.model("Course", CourseSchema);
+module.exports = mongoose.model("Row", RowSchema);

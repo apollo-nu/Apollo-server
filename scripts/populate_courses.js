@@ -7,21 +7,6 @@ APOLLO_API_URL_COURSES = config.host + "/courses";
 
 DEFAULT_TERMS = [4720, 4730, 4740, 4750]; //Fall 2018, Winter 2019, Spring 2019, Fall 2019
 
-function resetDatabase() {
-    axios.delete(APOLLO_API_URL_COURSES)
-        .then(response => {
-            response = response.data;
-            if (!response.ok) {
-                console.log(response.err);
-            } else {
-                getSubjects();
-            }
-        })
-        .catch(err => {
-            console.log(err);
-        })
-}
-
 function getSubjects(term) {
     axios.get(APOLLO_API_URL_SUBJECTS)
         .then(response => {
@@ -75,9 +60,8 @@ function getCourses(subjects, term) {
 }
 
 function refreshCourses(courses) {
-    axios.post(APOLLO_API_URL_COURSES, {
-        courses: courses,
-        custom: false
+    axios.post(APOLLO_API_URL_COURSES + "/refresh", {
+        courses: courses
     })
         .then(response => {
             response = response.data;
@@ -88,4 +72,4 @@ function refreshCourses(courses) {
 }
 
 //getSubjects();
-module.exports = resetDatabase;
+module.exports = getSubjects;

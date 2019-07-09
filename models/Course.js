@@ -7,7 +7,7 @@ const CourseSchema = new Schema({
     id: Number,
     title: String,
     school: String,
-    subject: String,
+    subject: String, //make this an ObjectId reference to Subject
     attributes: String,
     requirements: String
 });

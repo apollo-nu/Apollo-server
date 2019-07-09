@@ -17,29 +17,55 @@ router.route("/")
     .post((req, res) => {
         console.log("POST: /courses");
         if (!req.body) {
-            res.send(response(false, "No HTTP body found for POST request.", {courses: []}));
-        } else if (!req.body.courses) {
-            res.send(response(false, "HTTP body malformed: empty or missing 'courses' field.", {courses: []}));
+            res.send(response(false, "No HTTP body found for POST request.", {}));
+        } else if (!req.body.course || req.body.course) {
+            res.send(response(false, "HTTP body malformed: empty or missing 'course' field.", {}));
         }
-        for (let bodyCourse of req.body.courses) {
-            let course = new Course();
-            course.initialize(bodyCourse, req.body.custom);
-            course.save(err => {
-                if (err) {
-                    res.send(response(false, err, {courses: []}));
-                }
-            })
-        }
-        res.send(response(true, "", {courses: []}));
-    })
-    .delete((req, res) => { //CHANGE THIS TO FIND AND REPLACE RATHER THAN DELETE
-        console.log("DELETE: /courses");
-        Course.deleteMany({custom: false}, err => {
+
+        let course = new Course();
+        course.initialize(req.body.course, req.body.custom);
+        course.save(err => {
             if (err) {
-                res.send(response(false, err, {courses: []}));
+                res.send(response(false, err, {}));
             }
-            res.send(response(true, "", {courses: []}));
-        })
+        });
+        res.send(response(true, "", {}));
+    })
+
+router.route("/refresh")
+    .post((req, res) => {
+        console.log("POST: /courses/refresh");
+        if (!req.body) {
+            res.send(response(false, "No HTTP body found for POST request.", {}));
+        } else if (!req.body.courses) {
+            res.send(response(false, "HTTP body malformed: empty or missing 'courses' field.", {}));
+        }
+        let courses = req.body.courses;
+        courses = typeof(courses) === "string"? [courses] : courses;
+        for (let bodyCourse of courses) {
+            Course.findOneAndReplace(
+                {
+                    id: bodyCourse.id,
+                    custom: false
+                },
+                {$set: {
+                    custom: false,
+                    id: bodyCourse.id,
+                    title: bodyCourse.title,
+                    school: bodyCourse.school,
+                    subject: bodyCourse.subject,
+                    attributes: bodyCourse.attributes,
+                    requirements: bodyCourse.requirements
+                }},
+                {upsert: true},
+                err => {
+                    if (err) {
+                        res.send(response(false, err, {}));
+                    }
+                    res.send(response(true, "", {}));
+                }
+            )
+        }
     })
 
 module.exports = router;

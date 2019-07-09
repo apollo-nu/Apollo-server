@@ -5,4 +5,4 @@ const BoardSchema = new Schema({
     
 });
 
-module.exports = mongoose.model("Course", CourseSchema);
+module.exports = mongoose.model("Board", BoardSchema);
