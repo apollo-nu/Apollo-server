@@ -2,9 +2,11 @@ const express = require('express');
 const router = express.Router();
 
 const Course = require('../models/Course');
-const response = require("../src/responseBody");
+const response = require("../src/helpers/responseBody");
+const authenticate = require("../src/middleware/authenticate");
 
 router.route("/")
+    .all(authenticate)
     .get((req, res) => {
         console.log("GET: /courses");
         Course.find((err, courses) => {
@@ -32,7 +34,7 @@ router.route("/")
         res.send(response(true, "", {}));
     })
 
-router.route("/refresh")
+router.route("/update")
     .post((req, res) => {
         console.log("POST: /courses/refresh");
         if (!req.body) {

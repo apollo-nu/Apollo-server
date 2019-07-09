@@ -60,7 +60,7 @@ function getCourses(subjects, term) {
 }
 
 function refreshCourses(courses) {
-    axios.post(APOLLO_API_URL_COURSES + "/refresh", {
+    axios.post(APOLLO_API_URL_COURSES + "/update", {
         courses: courses
     })
         .then(response => {

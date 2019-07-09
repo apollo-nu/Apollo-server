@@ -2,9 +2,11 @@ const express = require("express");
 const router = express.Router();
 
 const Subject = require("../models/Subject");
-const response = require("../src/responseBody");
+const response = require("../src/helpers/responseBody");
+const authenticate = require("../src/middleware/authenticate");
 
 router.route("/")
+    .all(authenticate)
     .get((req, res) => {
         console.log("GET: /subjects");
         Subject.find((err, subjects) => {
@@ -33,7 +35,7 @@ router.route("/")
         res.send(response(true, "", {subjects: []}));
     })
 
-router.route("/refresh")
+router.route("/update")
     .post((req, res) => {
         console.log("POST: /subjects/refresh");
         if (!req.body) {

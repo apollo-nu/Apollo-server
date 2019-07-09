@@ -20,7 +20,7 @@ function getSubjects() {
 }
 
 function refreshSubjects(subjects) {
-    axios.post(APOLLO_API_URL + "/refresh", {
+    axios.post(APOLLO_API_URL + "/update", {
         subjects: subjects
     })
         .then(response => {

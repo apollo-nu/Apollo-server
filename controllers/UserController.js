@@ -4,9 +4,11 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
-const response = require("../src/responseBody");
+const response = require("../src/helpers/responseBody");
+const authenticate = require("../src/middleware/authenticate");
 
 router.route("/:id")
+    .all(authenticate)
     .get((req, res) => {
         const id = req.params["id"];
         console.log("GET /user/" + id);
@@ -23,20 +25,6 @@ router.route("/:id")
             res.send(err? (response(false, err, {_id: id})) : response(true, "", {_id: user._id}));
         })
     })
-    .delete((req, res) => {
-        const id = req.params["id"];
-        console.log("DELETE /user/" + id);
-
-        User.findOneAndDelete({_id: id}, (err, user) => {
-            if (err) {
-                res.send(response(false, err, {_id: id}));
-            } else if (!user) {
-                res.send(response(true, "User not found.", {_id: id}));
-            } else {
-                res.send(response(true, "", {_id: user._id}));
-            }
-        })
-    });
 
 router.route("/createAccount")
     .post((req, res) => {
@@ -87,12 +75,21 @@ router.route("/login")
                     res.send(response(true, `User ${user._id} logged in.`, {
                         _id: user._id,
                         token: token
+                        // this is also where we should send session cookie
                     }));
                 } else {
                     res.send(response(false, "Failed to validate user.", {_id: user._id}));
                 }
             }
         })
+    })
+
+router.route("/:id/logout")
+    .all(authenticate)
+    .get((req, res) => {
+        const id = req.params.id;
+        console.log(`GET: /users/${id}/logout`);
+        res.send({});
     })
 
 module.exports = router;

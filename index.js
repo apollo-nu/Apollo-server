@@ -11,32 +11,6 @@ const bpConfig = {limit: "10mb", extended: true};
 app.use(bodyParser.urlencoded(bpConfig));
 app.use(bodyParser.json(bpConfig));
 
-/*
--token is given to client upon login and stored in the client
--token is passed in to each request as a header
--users shouldn't need to log in if their token hasn't expired
--if token has expired, log user out
--handle errors on client-side
-*/
-const response = require("./src/responseBody");
-const jwt = require("jsonwebtoken");
-app.use((req, res, next) => {
-	const token = req.headers["access-token"];
-	if (token) {
-		jwt.verify(token, process.env.JWT_SECRET, err => {
-			if (err) {
-				res.send(response(false, err, {}));
-			} else {
-				res.header("Access-Control-Allow-Origin", "*");
-				res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-				next();
-			}
-		})
-	} else {
-		res.send(response(false, "No token provided", {}));
-	}
-});
-
 const helmet = require("helmet");
 app.use(helmet());
 
@@ -62,7 +36,7 @@ app.listen(PORT);
 console.log("Application listening on PORT: " + PORT);
 
 if (env === "production") {
-    require("./scripts/set_timers")();
+    require("./scripts/populate_database/set_timers")();
 }
 
 module.exports = app;
