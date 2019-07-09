@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
-const jwt = require("jsonwebtoken");
-
 const User = require("../models/User");
-const response = require("../src/helpers/responseBody");
+const response = require("../src/constructors/responseBody");
+const jwt = require("../src/constructors/jwt");
 const authenticate = require("../src/middleware/authenticate");
 
 router.route("/:id")
@@ -32,14 +31,14 @@ router.route("/createAccount")
         const email = req.body.email;
         const password = req.body.password;
         if (!email || !password) {
-            res.send(response(false, "Empty email or password field(s).", {_id: null}))
+            res.send(response(false, "Empty email or password field(s)."))
         }
 
         User.findOne({email: email}, (err, user) => {
             if (err) {
                 res.send(response(false, err, {_id: null}));
             } else if (user) {
-                res.send(response(false, `User with email ${email} already exists.`, {_id: user._id}));
+                res.send(response(false, `User with email ${email} already exists.`));
             } else {
                 const newUser = new User();
                 newUser.email = email;
@@ -58,27 +57,18 @@ router.route("/login")
 
         User.findOne({email: email}, (err, user) => {
             if (err) {
-                res.send(response(false, err, {_id: user._id}));
+                res.send(response(false, err));
             } else if (!user) {
-                res.send(response(false, `No user with email ${email} found.`, {_id: user._id}));
+                res.send(response(false, `No user with email ${email} found.`));
             } else {
                 if (user.validateUser(req.body.password)) {
-                    const payload = {
+                    const token = jwt({
                         id: user._id,
                         issued: Date.now()
-                    }
-                    const options = {
-                        expiresIn: 10080 //1 week
-                    }
-                    const token = jwt.sign(payload, process.env.JWT_SECRET, options);
-
-                    res.send(response(true, `User ${user._id} logged in.`, {
-                        _id: user._id,
-                        token: token
-                        // this is also where we should send session cookie
-                    }));
+                    }, 10080);
+                    res.send(response(true, `User logged in.`, {token: token}));
                 } else {
-                    res.send(response(false, "Failed to validate user.", {_id: user._id}));
+                    res.send(response(false, "Failed to validate user."));
                 }
             }
         })

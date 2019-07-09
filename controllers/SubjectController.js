@@ -10,38 +10,35 @@ router.route("/")
     .get((req, res) => {
         console.log("GET: /subjects");
         Subject.find((err, subjects) => {
-            if (err) {
-                res.send(response(false, err, {subjects: []}));
-            }
-            res.send(response(true, "", {subjects: subjects}));
+            res.send(err? response(false, err) : response(true, "", {subjects: subjects}));
         });
     })
     .post((req, res) => {
         console.log("POST: /subjects");
         if (!req.body) {
-            res.send(response(false, "No HTTP body found for POST request.", {subjects: []}));
+            res.send(response(false, "No HTTP body found for POST request."));
         } else if (!req.body.subjects) {
-            res.send(response(false, "HTTP body malformed: empty or missing 'subjects' field.", {subjects: []}));
+            res.send(response(false, "HTTP body malformed: empty or missing 'subjects' field."));
         }
         for (let bodySubject of req.body.subjects) {
             let subject = new Subject();
             subject.initialize(bodySubject, false);
             subject.save(err => {
                 if (err) {
-                    res.send(response(false, err, {subjects: []}));
+                    res.send(response(false, err));
                 }
             })
         }
-        res.send(response(true, "", {subjects: []}));
+        res.send(response(true, "All subjects POSTed successfully."));
     })
 
 router.route("/update")
     .post((req, res) => {
         console.log("POST: /subjects/refresh");
         if (!req.body) {
-            res.send(response(false, "No HTTP body found for POST request.", {subjects: []}));
+            res.send(response(false, "No HTTP body found for POST request."));
         } else if (!req.body.subjects) {
-            res.send(response(false, "HTTP body malformed: empty or missing 'subjects' field.", {subjects: []}));
+            res.send(response(false, "HTTP body malformed: empty or missing 'subjects' field."));
         }
 
         let subjects = req.body.subjects;
@@ -59,7 +56,7 @@ router.route("/update")
                 }},
                 {upsert: true},
                 err => {
-                    res.send(err? response(false, err, {}) : response(true, "", {}));
+                    res.send(err? response(false, err) : response(true, `Subject ${bodySubject.symbol} POSTed successfully.`));
                 }
             )
         }

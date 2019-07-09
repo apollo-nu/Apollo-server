@@ -1,4 +1,4 @@
-const response = require("../helpers/responseBody");
+const response = require("../constructors/responseBody");
 const jwt = require("jsonwebtoken");
 
 /*

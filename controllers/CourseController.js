@@ -61,7 +61,7 @@ router.route("/update")
                 }},
                 {upsert: true},
                 err => {
-                    res.send(err? response(false, err, {}) : response(true, "", {}));
+                    res.send(err? response(false, err) : response(true, `Course ${bodyCourse.id} POSTed successfully.`));
                 }
             )
         }
