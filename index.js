@@ -20,8 +20,8 @@ app.use(helmet());
 const env = "" + process.env.NODE_ENV;
 console.log("ENV: " + env);
 
-const config = require('./config/db')[env || "dev"];
-const mongoose = require('mongoose');
+const config = require("./config/db")[env || "dev"];
+const mongoose = require("mongoose");
 mongoose.connect(config.database, { useNewUrlParser: true });
 
 const CourseController = require("./controllers/CourseController");

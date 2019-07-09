@@ -1,5 +1,5 @@
 const axios = require("axios");
-const config = require("../config/db")["dev"]; //change this between prod/dev when needed
+const config = require("../../config/db")["dev"]; //change this between prod/dev when needed
 
 COURSE_API_URL = "https://api.asg.northwestern.edu/subjects";
 APOLLO_API_URL = config.host + "/subjects";

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const Course = require('../models/Course');
-const response = require("../src/helpers/responseBody");
+const response = require("../src/constructors/responseBody");
 const authenticate = require("../src/middleware/authenticate");
 
 router.route("/")

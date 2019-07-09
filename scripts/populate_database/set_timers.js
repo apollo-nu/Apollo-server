@@ -1,5 +1,5 @@
 const PING_TIMER = 1750000; //~29 mins
-const SUBJECT_TIMER = 31536000000; //1 year
+const SUBJECT_TIMER = 123456789 //DO NOT USE! -> this number must fit in a 32 bit signed int or it will default to 1
 const COURSE_TIMER = 604800000; //1 week
 
 function ping() {
@@ -23,6 +23,6 @@ function populateCourses() {
 
 module.exports = () => {
     ping();
-    populateSubjects();
+    //populateSubjects();
     populateCourses();
 }
