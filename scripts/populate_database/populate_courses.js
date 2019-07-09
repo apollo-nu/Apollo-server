@@ -1,26 +1,11 @@
 const axios = require("axios");
-const config = require("../config/db")["dev"]; //change this between prod/dev when needed
+const config = require("../../config/db")["dev"]; //change this between prod/dev when needed
 
 COURSE_API_URL = "https://api.asg.northwestern.edu/courses/";
 APOLLO_API_URL_SUBJECTS = config.host + "/subjects";
 APOLLO_API_URL_COURSES = config.host + "/courses";
 
 DEFAULT_TERMS = [4720, 4730, 4740, 4750]; //Fall 2018, Winter 2019, Spring 2019, Fall 2019
-
-function resetDatabase() {
-    axios.delete(APOLLO_API_URL_COURSES)
-        .then(response => {
-            response = response.data;
-            if (!response.ok) {
-                console.log(response.err);
-            } else {
-                getSubjects();
-            }
-        })
-        .catch(err => {
-            console.log(err);
-        })
-}
 
 function getSubjects(term) {
     axios.get(APOLLO_API_URL_SUBJECTS)
@@ -75,7 +60,7 @@ function getCourses(subjects, term) {
 }
 
 function refreshCourses(courses) {
-    axios.post(APOLLO_API_URL_COURSES, {
+    axios.post(APOLLO_API_URL_COURSES + "/update", {
         courses: courses
     })
         .then(response => {
@@ -87,4 +72,4 @@ function refreshCourses(courses) {
 }
 
 //getSubjects();
-module.exports = resetDatabase;
+module.exports = getSubjects;

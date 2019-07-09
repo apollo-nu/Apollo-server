@@ -1,22 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
-const jwt = require("jsonwebtoken");
-
 const User = require("../models/User");
-const response = require("../src/responseBody");
-
-router.route("/")
-    .get((req, res) => {
-        console.log("GET /user");
-        User.find()
-            .sort("signupDate")
-            .exec((err, users) => {
-                res.send(err? response(false, err, {users: []}) : response(true, "", {users: users}));
-            })
-    })
+const response = require("../src/constructors/responseBody");
+const jwt = require("../src/constructors/jwt");
+const authenticate = require("../src/middleware/authenticate");
 
 router.route("/:id")
+    .all(authenticate)
     .get((req, res) => {
         const id = req.params["id"];
         console.log("GET /user/" + id);
@@ -25,28 +16,14 @@ router.route("/:id")
             res.send(err? response(false, err, {user: null}) : response(true, "", {user: user}));
         });
     })
-    .put((req, res) => {
+    .put((req, res) => { //replace this with more specific functions
         const id = req.params["id"];
         console.log("PUT /user/" + id);
 
         User.findOneAndUpdate({_id: id}, req.body.user, (err, user) => {
-            res.send(err? (response(false, err, {_id: id})) : response(true, "", {_id: user._id}));
+            res.send(err? (response(false, err, {_id: id})) : response(true, "User updated successfully.", {_id: user._id}));
         })
     })
-    .delete((req, res) => {
-        const id = req.params["id"];
-        console.log("DELETE /user/" + id);
-
-        User.findOneAndDelete({_id: id}, (err, user) => {
-            if (err) {
-                res.send(response(false, err, {_id: id}));
-            } else if (!user) {
-                res.send(response(true, "User not found.", {_id: id}));
-            } else {
-                res.send(response(true, "", {_id: user._id}));
-            }
-        })
-    });
 
 router.route("/createAccount")
     .post((req, res) => {
@@ -54,14 +31,14 @@ router.route("/createAccount")
         const email = req.body.email;
         const password = req.body.password;
         if (!email || !password) {
-            res.send(response(false, "Empty email or password field(s).", {_id: null}))
+            res.send(response(false, "Empty email or password field(s)."))
         }
 
         User.findOne({email: email}, (err, user) => {
             if (err) {
                 res.send(response(false, err, {_id: null}));
             } else if (user) {
-                res.send(response(false, `User with email ${email} already exists.`, {_id: user._id}));
+                res.send(response(false, `User with email ${email} already exists.`));
             } else {
                 const newUser = new User();
                 newUser.email = email;
@@ -80,29 +57,30 @@ router.route("/login")
 
         User.findOne({email: email}, (err, user) => {
             if (err) {
-                res.send(response(false, err, {_id: user._id}));
+                res.send(response(false, err));
             } else if (!user) {
-                res.send(response(false, `No user with email ${email} found.`, {_id: user._id}));
+                res.send(response(false, `No user with email ${email} found.`));
             } else {
                 if (user.validateUser(req.body.password)) {
-                    const payload = {
+                    const token = jwt({
                         id: user._id,
                         issued: Date.now()
-                    }
-                    const options = {
-                        expiresIn: 10080 //1 week
-                    }
-                    const token = jwt.sign(payload, process.env.JWT_SECRET, options);
-
-                    res.send(response(true, `User ${user._id} logged in.`, {
-                        _id: user._id,
-                        token: token
-                    }));
+                    }, 10080);
+                    res.cookie("jwt", token); //clear with res.clearCookie(cookieName);
+                    res.send(response(true, `User logged in.`, {id: user._id}));
                 } else {
-                    res.send(response(false, "Failed to validate user.", {_id: user._id}));
+                    res.send(response(false, "Failed to validate user."));
                 }
             }
         })
+    })
+
+router.route("/:id/logout")
+    .all(authenticate)
+    .get((req, res) => {
+        const id = req.params.id;
+        console.log(`GET: /users/${id}/logout`);
+        res.send({}); //TODO
     })
 
 module.exports = router;
