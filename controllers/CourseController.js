@@ -4,17 +4,6 @@ const router = express.Router();
 const Course = require('../models/Course');
 const response = require("../src/responseBody");
 
-const courseSchema = (courseObject) => {
-    let course = new Course();
-    course.id = courseObject.id;
-    course.title = courseObject.title;
-    course.school = courseObject.school;
-    course.subject = courseObject.subject;
-    course.attributes = courseObject.attributes;
-    course.requirements = courseObject.requirements;
-    return course
-}
-
 router.route("/")
     .get((req, res) => {
         console.log("GET: /courses");
@@ -33,7 +22,9 @@ router.route("/")
             res.send(response(false, "HTTP body malformed: empty or missing 'courses' field.", {courses: []}));
         }
         for (let bodyCourse of req.body.courses) {
-            courseSchema(bodyCourse).save(err => {
+            let course = new Course();
+            course.initialize(bodyCourse, req.body.custom);
+            course.save(err => {
                 if (err) {
                     res.send(response(false, err, {courses: []}));
                 }
@@ -41,9 +32,9 @@ router.route("/")
         }
         res.send(response(true, "", {courses: []}));
     })
-    .delete((req, res) => {
+    .delete((req, res) => { //CHANGE THIS TO FIND AND REPLACE RATHER THAN DELETE
         console.log("DELETE: /courses");
-        Course.deleteMany(err => {
+        Course.deleteMany({custom: false}, err => {
             if (err) {
                 res.send(response(false, err, {courses: []}));
             }

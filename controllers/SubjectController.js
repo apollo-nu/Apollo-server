@@ -23,9 +23,7 @@ router.route("/")
         }
         for (let bodySubject of req.body.subjects) {
             let subject = new Subject();
-            subject.symbol = bodySubject.symbol;
-            subject.name = bodySubject.name;
-
+            subject.initialize(bodySubject, false);
             subject.save(err => {
                 if (err) {
                     res.send(response(false, err, {subjects: []}));

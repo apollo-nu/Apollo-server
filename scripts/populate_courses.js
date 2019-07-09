@@ -76,7 +76,8 @@ function getCourses(subjects, term) {
 
 function refreshCourses(courses) {
     axios.post(APOLLO_API_URL_COURSES, {
-        courses: courses
+        courses: courses,
+        custom: false
     })
         .then(response => {
             response = response.data;

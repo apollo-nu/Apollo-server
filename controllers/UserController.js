@@ -6,16 +6,6 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const response = require("../src/responseBody");
 
-router.route("/")
-    .get((req, res) => {
-        console.log("GET /user");
-        User.find()
-            .sort("signupDate")
-            .exec((err, users) => {
-                res.send(err? response(false, err, {users: []}) : response(true, "", {users: users}));
-            })
-    })
-
 router.route("/:id")
     .get((req, res) => {
         const id = req.params["id"];
