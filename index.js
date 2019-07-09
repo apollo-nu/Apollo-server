@@ -11,6 +11,12 @@ const bpConfig = {limit: "10mb", extended: true};
 app.use(bodyParser.urlencoded(bpConfig));
 app.use(bodyParser.json(bpConfig));
 
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+})
+
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
