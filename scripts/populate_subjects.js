@@ -20,24 +20,13 @@ function getSubjects() {
 }
 
 function refreshSubjects(subjects) {
-    axios.delete(APOLLO_API_URL)
+    axios.post(APOLLO_API_URL + "/refresh", {
+        subjects: subjects
+    })
         .then(response => {
             response = response.data;
             if (!response.ok) {
                 console.log(response.err);
-            } else {
-                axios.post(APOLLO_API_URL, {
-                    subjects: subjects
-                })
-                    .then(response => {
-                        response = response.data;
-                        if (!response.ok) {
-                            console.log(response.err);
-                        }
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    })
             }
         })
         .catch(err => {

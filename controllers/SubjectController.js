@@ -32,14 +32,35 @@ router.route("/")
         }
         res.send(response(true, "", {subjects: []}));
     })
-    .delete((req, res) => {
-        console.log("DELETE: /subjects");
-        Subject.deleteMany(err => {
-            if (err) {
-                res.send(response(false, err, {subjects: []}));
-            }
-            res.send(response(true, "", {subjects: []}));
-        });
+
+router.route("/refresh")
+    .post((req, res) => {
+        console.log("POST: /subjects/refresh");
+        if (!req.body) {
+            res.send(response(false, "No HTTP body found for POST request.", {subjects: []}));
+        } else if (!req.body.subjects) {
+            res.send(response(false, "HTTP body malformed: empty or missing 'subjects' field.", {subjects: []}));
+        }
+
+        let subjects = req.body.subjects;
+        subjects = typeof(subjects) === "string"? [subjects] : subjects;
+        for (let bodySubject of subjects) {
+            Subject.findOneAndReplace(
+                {
+                    symbol: bodySubject.symbol,
+                    custom: false
+                },
+                {$set: {
+                    custom: false,
+                    symbol: bodySubject.symbol,
+                    name: bodySubject.name
+                }},
+                {upsert: true},
+                err => {
+                    res.send(err? response(false, err, {}) : response(true, "", {}));
+                }
+            )
+        }
     })
 
 module.exports = router;

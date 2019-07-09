@@ -59,10 +59,7 @@ router.route("/refresh")
                 }},
                 {upsert: true},
                 err => {
-                    if (err) {
-                        res.send(response(false, err, {}));
-                    }
-                    res.send(response(true, "", {}));
+                    res.send(err? response(false, err, {}) : response(true, "", {}));
                 }
             )
         }
