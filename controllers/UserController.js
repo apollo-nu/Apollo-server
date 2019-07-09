@@ -16,12 +16,12 @@ router.route("/:id")
             res.send(err? response(false, err, {user: null}) : response(true, "", {user: user}));
         });
     })
-    .put((req, res) => {
+    .put((req, res) => { //replace this with more specific functions
         const id = req.params["id"];
         console.log("PUT /user/" + id);
 
         User.findOneAndUpdate({_id: id}, req.body.user, (err, user) => {
-            res.send(err? (response(false, err, {_id: id})) : response(true, "", {_id: user._id}));
+            res.send(err? (response(false, err, {_id: id})) : response(true, "User updated successfully.", {_id: user._id}));
         })
     })
 
@@ -66,7 +66,8 @@ router.route("/login")
                         id: user._id,
                         issued: Date.now()
                     }, 10080);
-                    res.send(response(true, `User logged in.`, {token: token}));
+                    res.cookie("jwt", token); //clear with res.clearCookie(cookieName);
+                    res.send(response(true, `User logged in.`, {id: user._id}));
                 } else {
                     res.send(response(false, "Failed to validate user."));
                 }
@@ -79,7 +80,7 @@ router.route("/:id/logout")
     .get((req, res) => {
         const id = req.params.id;
         console.log(`GET: /users/${id}/logout`);
-        res.send({});
+        res.send({}); //TODO
     })
 
 module.exports = router;

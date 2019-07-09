@@ -11,6 +11,9 @@ const bpConfig = {limit: "10mb", extended: true};
 app.use(bodyParser.urlencoded(bpConfig));
 app.use(bodyParser.json(bpConfig));
 
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
 const helmet = require("helmet");
 app.use(helmet());
 

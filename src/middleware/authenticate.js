@@ -11,7 +11,7 @@ function authenticate(req, res, next) {
     if (token) {
         jwt.verify(token, process.env.JWT_SECRET, err => {
             if (err) {
-                res.send(response(false, err, {}));
+                res.send(response(false, err));
             } else {
                 res.header("Access-Control-Allow-Origin", "*");
                 res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -19,7 +19,7 @@ function authenticate(req, res, next) {
             }
         })
     } else {
-        res.send(response(false, "No token provided", {}));
+        res.send(response(false, "No token provided"));
     }
 }
 
