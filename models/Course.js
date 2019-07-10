@@ -12,7 +12,7 @@ const CourseSchema = new Schema({
     requirements: String
 });
 
-CourseSchema.methods.initialize = (courseObject, custom) => {
+CourseSchema.methods.initialize = function(courseObject, custom) {
     this.custom = custom;
     this.id = courseObject.id;
     this.title = courseObject.title;

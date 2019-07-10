@@ -7,7 +7,7 @@ const SubjectSchema = new Schema({
     name: String
 });
 
-SubjectSchema.methods.initialize = (subjectObject, custom) => {
+SubjectSchema.methods.initialize = function(subjectObject, custom) {
     this.custom = custom;
     this.symbol = subjectObject.symbol;
     this.name = subjectObject.name;

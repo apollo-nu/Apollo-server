@@ -7,11 +7,11 @@ const UserSchema = new Schema({
     password: String
 });
 
-UserSchema.methods.generateHash = password => {
+UserSchema.methods.generateHash = function(password) {
     this.password = bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 }
 
-UserSchema.methods.validateUser = password => {
+UserSchema.methods.validateUser = function(password) {
     return bcrypt.compareSync(password, this.password);
 }
 
