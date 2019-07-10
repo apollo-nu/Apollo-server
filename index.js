@@ -14,11 +14,8 @@ app.use(bodyParser.json(bpConfig));
 const https = require("./src/middleware/https");
 app.use(https);
 
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-})
+const cors = require("./src/middleware/cors");
+app.use(cors);
 
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
