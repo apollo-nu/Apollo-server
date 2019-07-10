@@ -66,7 +66,7 @@ router.route("/login")
                         id: user._id,
                         issued: Date.now()
                     }, 10080);
-                    res.cookie("jwt", token); //clear with res.clearCookie(cookieName);
+                    res.cookie("access-token", token, {httpOnly: true, secure: true});
                     res.send(response(true, `User logged in.`, {id: user._id}));
                 } else {
                     res.send(response(false, "Failed to validate user."));
