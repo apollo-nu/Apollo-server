@@ -19,8 +19,7 @@ router.route("/")
             res.send(response(false, "HTTP body malformed: empty or missing 'subjects' field."));
         }
         for (let bodySubject of req.body.subjects) {
-            let subject = new Subject();
-            subject.initialize(bodySubject, false);
+            const subject = Subject.create(bodySubject, false);
             subject.save(err => {
                 if (err) {
                     res.send(response(false, err));

@@ -22,14 +22,13 @@ router.route("/")
             res.send(response(false, "HTTP body malformed: empty or missing 'course' field."));
         }
 
-        let course = new Course();
-        course.initialize(req.body.course, req.body.custom);
+        const course = Course.create(req.body.course, req.body.custom);
         course.save(err => {
             if (err) {
-                res.send(response(false, err, {}));
+                res.send(response(false, err));
             }
         });
-        res.send(response(true, "", {}));
+        res.send(response(true, ""));
     })
 
 router.route("/update")

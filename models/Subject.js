@@ -7,10 +7,12 @@ const SubjectSchema = new Schema({
     name: String
 });
 
-SubjectSchema.methods.initialize = function(subjectObject, custom) {
-    this.custom = custom;
-    this.symbol = subjectObject.symbol;
-    this.name = subjectObject.name;
+SubjectSchema.statics.create = function(obj, custom) {
+    let subject = new mongoose.model("Subject", SubjectSchema)();
+    subject.custom = custom;
+    subject.symbol = obj.symbol;
+    subject.name = obj.name;
+    return subject;
 }
 
 module.exports = mongoose.model("Subject", SubjectSchema);

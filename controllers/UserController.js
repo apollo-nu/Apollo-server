@@ -9,21 +9,17 @@ const validate = require("../src/indicative/indicative");
 
 router.route("/createAccount")
     .post((req, res) => {
-        validate(req.body, "creds", response => {
-            if (response.ok) {
-                const email = req.body.email;
-                const password = req.body.password;
-                User.findOne({email: email}, (err, user) => {
+        validate(req.body, "creds", validResponse => {
+            if (validResponse.ok) {
+                User.findOne({email: validResponse.body.email}, (err, user) => {
                     if (err) {
                         res.send(response(false, err, {_id: null}));
                     } else if (user) {
-                        res.send(response(false, `User with email ${email} already exists.`));
+                        res.send(response(false, "User already exists."));
                     } else {
-                        const newUser = new User();
-                        newUser.email = email;
-                        newUser.generateHash(password);
+                        const newUser = User.create(validResponse.body);
                         newUser.save((err, user) => {
-                            res.send(err? response(false, err, {_id: null}) : response(true, "User created successfully.", {_id: user._id}));
+                            res.send(err? response(false, err, {_id: null}) : response(true, "", {_id: user._id}));
                         });
                     }
                 });
