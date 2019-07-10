@@ -1,5 +1,5 @@
 module.exports = {
-    "dev":{
+    "development":{
         "host":"http://localhost:8081",
         "database":`mongodb+srv://cooperfbarth:${process.env.MONGO_PW}@apollo-oq2zz.mongodb.net/test?retryWrites=true&w=majority`
     },

@@ -1,5 +1,6 @@
 const axios = require("axios");
 const config = require("../../config/db")["dev"]; //change this between prod/dev when needed
+const logger = require("../../src/logger");
 
 COURSE_API_URL = "https://api.asg.northwestern.edu/courses/";
 APOLLO_API_URL_SUBJECTS = config.host + "/subjects";
@@ -12,7 +13,7 @@ function getSubjects(term) {
         .then(response => {
             response = response.data;
             if (!response.ok) {
-                console.log(response.err);
+                logger.error(response.err);
             } else {
                 if (term) {
                     getCourses(response.body.subjects, term);
@@ -24,7 +25,7 @@ function getSubjects(term) {
             }
         })
         .catch(err => {
-            console.log(err);
+            logger.error(err);
         })
 }
 
@@ -44,17 +45,17 @@ function getCourses(subjects, term) {
                 const data = response.data
                 courses = courses.concat(data);
                 if (data.error) {
-                    console.log(data.error);
+                    logger.error(data.error);
                 } else if (++responseCount === subjects.length) {
                     refreshCourses(courses);
                 }
             })
             .catch(err => {
-                console.log(`Could not retrieve data for subject ${subject.symbol}.`);
+                logger.error(`Could not retrieve data for subject ${subject.symbol}.`);
                 if (++responseCount === subjects.length) {
                     refreshCourses(courses);
                 }
-                //console.log(err);
+                //logger.error(err);
             })
     }
 }
@@ -66,7 +67,7 @@ function refreshCourses(courses) {
         .then(response => {
             response = response.data;
             if (!response.ok) {
-                console.log(response.err);
+                logger.error(response.err);
             }
         })
 }

@@ -33,10 +33,11 @@ app.use(cookieParser());
 const helmet = require("helmet");
 app.use(helmet());
 
+const logger = require("./src/logger");
 const env = "" + process.env.NODE_ENV;
-console.log("ENV: " + env);
+logger.info("ENV: " + env);
 
-const config = require("./config/db")[env || "dev"];
+const config = require("./config/db")[env || "development"];
 const mongoose = require("mongoose");
 mongoose.connect(config.database, { useNewUrlParser: true });
 
@@ -52,7 +53,7 @@ app.use("/users", UserController);
 
 const PORT = process.env.PORT || 8081;
 app.listen(PORT);
-console.log("Application listening on PORT: " + PORT);
+logger.info("Application listening on PORT: " + PORT);
 
 if (env === "production") {
     require("./scripts/populate_database/set_timers")();
