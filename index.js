@@ -11,8 +11,8 @@ const bpConfig = {limit: "10mb", extended: true};
 app.use(bodyParser.urlencoded(bpConfig));
 app.use(bodyParser.json(bpConfig));
 
-const https = require("./src/middleware/https");
-app.use(https);
+// const https = require("./src/middleware/https");
+// app.use(https);
 
 const cors = require("./src/middleware/cors");
 app.use(cors);

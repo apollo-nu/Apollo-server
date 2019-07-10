@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 -if token has expired, log user out, otherwise keep logged in
 */
 function authenticate(req, res, next) {
+    console.log(req.cookies);
     const token = req.cookies["access-token"];
     if (token) {
         jwt.verify(token, process.env.JWT_SECRET, err => {
