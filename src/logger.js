@@ -5,7 +5,7 @@ const level = env === "production"? "info" : "debug";
 const fs = require("fs");
 const path = require("path");
 const logDir = "log";
-if (fs.existsSync(logDir)) {
+if (!fs.existsSync(logDir)) {
     fs.mkdirSync(logDir);
 }
 const filename = path.join(logDir, `${env}.log`);

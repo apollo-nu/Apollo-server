@@ -45,7 +45,8 @@ router.route("/login")
                         id: user._id,
                         issued: Date.now()
                     }, 10080);
-                    res.cookie("access-token", token, {httpOnly: true, secure: true});
+                    const cookieOptions = process.env.NODE_ENV === "production"? {httpOnly: true, secure: true} : {};
+                    res.cookie("access-token", token, cookieOptions);
                     res.send(response(true, `User logged in.`, {id: user._id}));
                 } else {
                     res.send(response(false, "Failed to validate user."));
