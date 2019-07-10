@@ -1,5 +1,6 @@
 const axios = require("axios");
 const config = require("../../config/db")["dev"]; //change this between prod/dev when needed
+const logger = require("../../src/logger");
 
 COURSE_API_URL = "https://api.asg.northwestern.edu/subjects";
 APOLLO_API_URL = config.host + "/subjects";
@@ -15,7 +16,7 @@ function getSubjects() {
             refreshSubjects(subjects);
         })
         .catch(err => {
-            console.log(err);
+            logger.error(err);
         })
 }
 
@@ -26,11 +27,11 @@ function refreshSubjects(subjects) {
         .then(response => {
             response = response.data;
             if (!response.ok) {
-                console.log(response.err);
+                logger.error(response.err);
             }
         })
         .catch(err => {
-            console.log(err);
+            logger.error(err);
         })
 }
 

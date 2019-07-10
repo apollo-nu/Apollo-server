@@ -5,54 +5,32 @@ const User = require("../models/User");
 const response = require("../src/constructors/responseBody");
 const jwt = require("../src/constructors/jwt");
 const authenticate = require("../src/middleware/authenticate");
-
-router.route("/:id")
-    .all(authenticate)
-    .get((req, res) => {
-        const id = req.params["id"];
-        console.log("GET /user/" + id);
-
-        User.findOne({_id: id}, (err, user) => {
-            res.send(err? response(false, err, {user: null}) : response(true, "", {user: user}));
-        });
-    })
-    .put((req, res) => { //replace this with more specific functions
-        const id = req.params["id"];
-        console.log("PUT /user/" + id);
-
-        User.findOneAndUpdate({_id: id}, req.body.user, (err, user) => {
-            res.send(err? (response(false, err, {_id: id})) : response(true, "User updated successfully.", {_id: user._id}));
-        })
-    })
+const validate = require("../src/indicative/indicative");
 
 router.route("/createAccount")
     .post((req, res) => {
-        console.log("POST /user");
-        const email = req.body.email;
-        const password = req.body.password;
-        if (!email || !password) {
-            res.send(response(false, "Empty email or password field(s)."))
-        }
-
-        User.findOne({email: email}, (err, user) => {
-            if (err) {
-                res.send(response(false, err, {_id: null}));
-            } else if (user) {
-                res.send(response(false, `User with email ${email} already exists.`));
-            } else {
-                const newUser = new User();
-                newUser.email = email;
-                newUser.generateHash(password);
-                newUser.save((err, user) => {
-                    res.send(err? response(false, err, {_id: null}) : response(true, "", {_id: user._id}));
+        validate(req.body, "creds", validResponse => {
+            if (validResponse.ok) {
+                User.findOne({email: validResponse.body.email}, (err, user) => {
+                    if (err) {
+                        res.send(response(false, err, {_id: null}));
+                    } else if (user) {
+                        res.send(response(false, "User already exists."));
+                    } else {
+                        const newUser = User.create(validResponse.body);
+                        newUser.save((err, user) => {
+                            res.send(err? response(false, err, {_id: null}) : response(true, "", {_id: user._id}));
+                        });
+                    }
                 });
+            } else {
+                res.send(response(false, response.message));
             }
-        })        
+        })
     })
 
 router.route("/login")
     .post((req, res) => {
-        console.log("GET user/login")
         const email = req.body.email;
 
         User.findOne({email: email}, (err, user) => {
@@ -66,7 +44,8 @@ router.route("/login")
                         id: user._id,
                         issued: Date.now()
                     }, 10080);
-                    res.cookie("jwt", token); //clear with res.clearCookie(cookieName);
+                    const cookieOptions = process.env.NODE_ENV === "production"? {httpOnly: true, secure: true} : {};
+                    res.cookie("access-token", token, cookieOptions);
                     res.send(response(true, `User logged in.`, {id: user._id}));
                 } else {
                     res.send(response(false, "Failed to validate user."));
@@ -75,12 +54,17 @@ router.route("/login")
         })
     })
 
-router.route("/:id/logout")
+router.route("/:id")
     .all(authenticate)
     .get((req, res) => {
-        const id = req.params.id;
-        console.log(`GET: /users/${id}/logout`);
-        res.send({}); //TODO
+        User.findOne({_id: req.params["id"]}, (err, user) => {
+            res.send(err? response(false, err) : response(true, "", {user: user}));
+        });
+    })
+    .put((req, res) => {
+        User.findOneAndUpdate({_id: req.params["id"]}, req.body.user, (err, user) => {
+            res.send(err? (response(false, err)) : response(true, "User updated successfully."));
+        })
     })
 
 module.exports = router;

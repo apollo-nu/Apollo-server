@@ -7,22 +7,19 @@ const authenticate = require("../src/middleware/authenticate");
 
 router.route("/")
     .all(authenticate)
-    .get((req, res) => {
-        console.log("GET: /subjects");
+    .get((_req, res) => {
         Subject.find((err, subjects) => {
             res.send(err? response(false, err) : response(true, "", {subjects: subjects}));
         });
     })
     .post((req, res) => {
-        console.log("POST: /subjects");
         if (!req.body) {
             res.send(response(false, "No HTTP body found for POST request."));
         } else if (!req.body.subjects) {
             res.send(response(false, "HTTP body malformed: empty or missing 'subjects' field."));
         }
         for (let bodySubject of req.body.subjects) {
-            let subject = new Subject();
-            subject.initialize(bodySubject, false);
+            const subject = Subject.create(bodySubject, false);
             subject.save(err => {
                 if (err) {
                     res.send(response(false, err));
@@ -34,7 +31,6 @@ router.route("/")
 
 router.route("/update")
     .post((req, res) => {
-        console.log("POST: /subjects/refresh");
         if (!req.body) {
             res.send(response(false, "No HTTP body found for POST request."));
         } else if (!req.body.subjects) {

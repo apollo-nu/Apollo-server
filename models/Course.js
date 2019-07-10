@@ -12,14 +12,16 @@ const CourseSchema = new Schema({
     requirements: String
 });
 
-CourseSchema.methods.initialize = (courseObject, custom) => {
-    this.custom = custom;
-    this.id = courseObject.id;
-    this.title = courseObject.title;
-    this.school = courseObject.school;
-    this.subject = courseObject.subject;
-    this.attributes = courseObject.attributes;
-    this.requirements = courseObject.requirements;
+CourseSchema.statics.create = function(obj, custom) {
+    let course = new mongoose.model("Course", CourseSchema)();
+    course.custom = custom;
+    course.id = obj.id;
+    course.title = obj.title;
+    course.school = obj.school;
+    course.subject = obj.subject;
+    course.attributes = obj.attributes;
+    course.requirements = obj.requirements;
+    return course;
 }
 
 module.exports = mongoose.model("Course", CourseSchema);
