@@ -6,8 +6,7 @@ const jwt = require("jsonwebtoken");
 -token is passed in to each request as a header
 -if token has expired, log user out, otherwise keep logged in
 */
-function authenticate(req, res, next) {
-    console.log(req.cookies);
+module.exports = (req, res, next) => {
     const token = req.cookies["access-token"];
     if (token) {
         jwt.verify(token, process.env.JWT_SECRET, err => {
@@ -17,10 +16,8 @@ function authenticate(req, res, next) {
             } else {
                 next();
             }
-        })
+        });
     } else {
         res.send(response(false, "No token provided"));
     }
 }
-
-module.exports = authenticate;

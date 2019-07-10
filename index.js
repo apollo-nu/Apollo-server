@@ -6,20 +6,30 @@ const app = express();
 const dotenv = require("dotenv");
 dotenv.config();
 
+// Parses request bodies
 const bodyParser = require("body-parser");
 const bpConfig = {limit: "10mb", extended: true};
 app.use(bodyParser.urlencoded(bpConfig));
 app.use(bodyParser.json(bpConfig));
 
+// Forces non-HTTPS routes to redirect
 // const https = require("./src/middleware/https");
 // app.use(https);
 
+// Adds CORS headers to requests
 const cors = require("./src/middleware/cors");
 app.use(cors);
 
+// Logging
+const morgan = require("./src/middleware/morgan");
+app.use(morgan.loggingErr);
+app.use(morgan.loggingOut);
+
+// Parses cookies
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
+// Sets various security-related HTTP headers
 const helmet = require("helmet");
 app.use(helmet());
 

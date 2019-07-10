@@ -5,8 +5,7 @@ const response = require("../src/constructors/responseBody");
 
 //this route is used to ping the server to keep it awake
 router.route("/")
-    .get((req, res) => {
-        console.log("GET: /");
+    .get((_req, res) => {
         res.send(response(true, "App is running."));
     });
 

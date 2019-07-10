@@ -7,8 +7,7 @@ const authenticate = require("../src/middleware/authenticate");
 
 router.route("/")
     .all(authenticate)
-    .get((req, res) => {
-        console.log("GET: /courses");
+    .get((_req, res) => {
         Course.find((err, courses) => {
             if (err) {
                 res.send(response(false, err));
@@ -17,7 +16,6 @@ router.route("/")
         })
     })
     .post((req, res) => {
-        console.log("POST: /courses");
         if (!req.body) {
             res.send(response(false, "No HTTP body found for POST request."));
         } else if (!req.body.course || req.body.course) {
@@ -36,7 +34,6 @@ router.route("/")
 
 router.route("/update")
     .post((req, res) => {
-        console.log("POST: /courses/refresh");
         if (!req.body) {
             res.send(response(false, "No HTTP body found for POST request."));
         } else if (!req.body.courses) {

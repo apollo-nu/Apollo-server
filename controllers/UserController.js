@@ -8,7 +8,6 @@ const authenticate = require("../src/middleware/authenticate");
 
 router.route("/createAccount")
     .post((req, res) => {
-        console.log("POST /user");
         const email = req.body.email;
         const password = req.body.password;
         if (!email || !password) {
@@ -33,7 +32,6 @@ router.route("/createAccount")
 
 router.route("/login")
     .post((req, res) => {
-        console.log("GET user/login")
         const email = req.body.email;
 
         User.findOne({email: email}, (err, user) => {
@@ -60,15 +58,13 @@ router.route("/:id")
     .all(authenticate)
     .get((req, res) => {
         const id = req.params["id"];
-        console.log("GET /user/" + id);
 
         User.findOne({_id: id}, (err, user) => {
             res.send(err? response(false, err, {user: null}) : response(true, "", {user: user}));
         });
     })
-    .put((req, res) => { //replace this with more specific functions
+    .put((req, res) => {
         const id = req.params["id"];
-        console.log("PUT /user/" + id);
 
         User.findOneAndUpdate({_id: id}, req.body.user, (err, user) => {
             res.send(err? (response(false, err, {_id: id})) : response(true, "User updated successfully.", {_id: user._id}));
@@ -79,7 +75,6 @@ router.route("/:id/logout")
     .all(authenticate)
     .get((req, res) => {
         const id = req.params.id;
-        console.log(`GET: /users/${id}/logout`);
         res.send({}); //TODO
     })
 
