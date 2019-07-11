@@ -3,11 +3,11 @@ const env = process.env.NODE_ENV;
 const level = env === "production"? "info" : "debug";
 
 const fs = require("fs");
-const path = require("path");
-const logDir = "log";
+const logDir = "./log";
 if (!fs.existsSync(logDir)) {
     fs.mkdirSync(logDir);
 }
+const path = require("path");
 const filename = path.join(logDir, `${env}.log`);
 
 const logFormat = format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`);

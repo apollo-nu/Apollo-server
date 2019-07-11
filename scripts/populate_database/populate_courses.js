@@ -32,7 +32,7 @@ function getSubjects(term) {
 function getCourses(subjects, term) {
     let responseCount = 0;
     let courses = [];
-    //should be about 400 queries per term; we only have 10000 per day, so be careful.
+    
     for (let subject of subjects) {
         axios.get(COURSE_API_URL, {
             params: {
