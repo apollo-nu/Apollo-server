@@ -31,7 +31,7 @@ function refreshSubjects(subjects) {
         .then(response => {
             response = response.data;
             if (!response.ok) {
-                logger.error(response.err);
+                logger.error(response.message);
             }
         })
         .catch(err => {

@@ -13,7 +13,7 @@ function getSubjects(term) {
         .then(response => {
             response = response.data;
             if (!response.ok) {
-                logger.error(response.err);
+                logger.error(response.message);
             } else {
                 if (term) {
                     getCourses(response.body.subjects, term);
@@ -43,7 +43,9 @@ function getCourses(subjects, term) {
         })
             .then(response => {
                 const data = response.data;
-                data.subject = subject._id;
+                for (course of data) {
+                    course.subject = subject._id;
+                }
                 courses = courses.concat(data);
                 if (data.error) {
                     logger.error(data.error);
@@ -52,12 +54,11 @@ function getCourses(subjects, term) {
                     refreshCourses(courses);
                 }
             })
-            .catch(err => {
-                logger.error(`Could not retrieve data for subject ${subject.symbol}.`);
+            .catch(_err => {
+                logger.warn(`Could not retrieve data for subject ${subject.symbol}.`);
                 if (++responseCount === subjects.length) {
                     refreshCourses(courses);
                 }
-                //logger.error(err);
             })
     }
 }
@@ -69,10 +70,9 @@ function refreshCourses(courses) {
         .then(response => {
             response = response.data;
             if (!response.ok) {
-                logger.error(response.err);
+                logger.error(response.message);
             }
         })
 }
 
-//getSubjects();
 module.exports = getSubjects;

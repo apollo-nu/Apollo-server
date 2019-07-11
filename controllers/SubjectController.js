@@ -7,12 +7,12 @@ const authenticate = require("../src/middleware/authenticate");
 const logger = require("../src/logger");
 
 router.route("/")
-    .all(authenticate)
     .get((_req, res) => {
         Subject.find((err, subjects) => {
             res.send(err? response(false, err) : response(true, "", {subjects: subjects}));
         });
     })
+    .all(authenticate)
     .post((req, res) => {
         if (!req.body) {
             res.send(response(false, "No HTTP body found for POST request."));

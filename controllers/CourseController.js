@@ -43,29 +43,29 @@ router.route("/update")
         } else if (!req.body.courses) {
             res.send(response(false, "HTTP body malformed: empty or missing 'courses' field."));
         }
-        let courses = req.body.courses;
-        courses = typeof(courses) === "string"? [courses] : courses;
-        for (let bodyCourse of courses) {
+        for (let bodyCourse of req.body.courses) {
             Course.findOneAndReplace(
                 {
                     id: bodyCourse.id,
                     custom: false
                 },
-                {$set: {
-                    custom: false,
+                {
                     id: bodyCourse.id,
                     title: bodyCourse.title,
                     school: bodyCourse.school,
                     subject: bodyCourse.subject,
                     attributes: bodyCourse.attributes,
-                    requirements: bodyCourse.requirements
-                }},
+                    requirements: bodyCourse.requirements,
+                    custom: false
+                },
                 {upsert: true},
                 err => {
-                    res.send(err? response(false, err) : response(true, `Course ${bodyCourse.id} POSTed successfully.`));
-                }
-            )
+                    if (err) {
+                        logging.error(err);
+                    }
+                });
         }
+        res.send(response(true, "Operation finished."))
     })
 
 module.exports = router;
