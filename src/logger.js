@@ -10,7 +10,8 @@ if (!fs.existsSync(logDir)) {
 const path = require("path");
 const filename = path.join(logDir, `${env}.log`);
 
-const logFormat = format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`);
+const curr_file = module.parent.filename.split("/").pop();
+const logFormat = format.printf(info => `${info.timestamp} - ${curr_file}:LINE_NUMBER [${info.level}] ${info.message}`);
 
 module.exports = createLogger({
     level: level,
