@@ -11,9 +11,11 @@ const logging = require("../src/logger");
 router.route("/")
     .all(authenticate)
     .get((_req, res) => {
-        Course.find((err, courses) => {
-            res.send(err? response(false, err) : response(true, "", {courses: courses}));
-        });
+        Course.find()
+            .populate("subject")
+            .exec((err, courses) => {
+                res.send(err? response(false, err) : response(true, "", {courses: courses}));
+            })
     })
     .post((req, res) => {
         if (!req.body) {
