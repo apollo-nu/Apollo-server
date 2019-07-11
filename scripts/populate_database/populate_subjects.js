@@ -1,5 +1,5 @@
 const axios = require("axios");
-const config = require("../../config/db")["dev"]; //change this between prod/dev when needed
+const config = require("../../config/db")["development"]; //change this between prod/dev when needed
 const logger = require("../../src/logger");
 
 COURSE_API_URL = "https://api.asg.northwestern.edu/subjects";
@@ -13,7 +13,11 @@ function getSubjects() {
     })
         .then(response => {
             const subjects = response.data;
-            refreshSubjects(subjects);
+            if (subjects.error) {
+                logger.error(subjects.error);
+            } else {
+                refreshSubjects(subjects);
+            }
         })
         .catch(err => {
             logger.error(err);
@@ -27,7 +31,7 @@ function refreshSubjects(subjects) {
         .then(response => {
             response = response.data;
             if (!response.ok) {
-                logger.error(response.err);
+                logger.error(response.message);
             }
         })
         .catch(err => {

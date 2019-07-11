@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const SubjectSchema = new Schema({
-    custom: Boolean,
     symbol: String,
-    name: String
+    name: String,
+    custom: Boolean
 });
 
 SubjectSchema.statics.create = function(obj, custom) {
