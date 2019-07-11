@@ -16,18 +16,13 @@ router.route("/")
     .post((req, res) => {
         if (!req.body) {
             res.send(response(false, "No HTTP body found for POST request."));
-        } else if (!req.body.subjects) {
-            res.send(response(false, "HTTP body malformed: empty or missing 'subjects' field."));
+        } else if (!req.body.subject) {
+            res.send(response(false, "HTTP body malformed: empty or missing 'subject' field."));
         }
-        for (let bodySubject of req.body.subjects) {
-            const subject = Subject.create(bodySubject, false);
-            subject.save(err => {
-                if (err) {
-                    res.send(response(false, err));
-                }
-            })
-        }
-        res.send(response(true, "All subjects POSTed successfully."));
+        const subject = Subject.create(req.body.subject, false);
+        subject.save(err => {
+            res.send(err? response(false, err) : response(true, "Subjects POSTed successfully."));
+        })
     })
 
 router.route("/update")
@@ -41,23 +36,12 @@ router.route("/update")
         let subjects = req.body.subjects;
         subjects = typeof(subjects) === "string"? [subjects] : subjects;
         for (let bodySubject of subjects) {
-            Subject.findOneAndReplace(
-                {
-                    symbol: bodySubject.symbol,
-                    custom: false
-                },
-                {
-                    symbol: bodySubject.symbol,
-                    name: bodySubject.name,
-                    custom: false
-                },
-                {upsert: true},
-                err => {
-                    if (err) {
-                        logger.error(err);
-                    }
+            bodySubject.custom = false;
+            Subject.findOneAndReplace(bodySubject, bodySubject, {upsert: true}, err => {
+                if (err) {
+                    logger.error(err);
                 }
-            )
+            });
         }
         res.send(response(true, "Operation finished."));
     })
