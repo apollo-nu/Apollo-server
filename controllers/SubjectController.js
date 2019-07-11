@@ -4,6 +4,7 @@ const router = express.Router();
 const Subject = require("../models/Subject");
 const response = require("../src/constructors/responseBody");
 const authenticate = require("../src/middleware/authenticate");
+const logger = require("../src/logger");
 
 router.route("/")
     .all(authenticate)
@@ -45,17 +46,20 @@ router.route("/update")
                     symbol: bodySubject.symbol,
                     custom: false
                 },
-                {$set: {
-                    custom: false,
+                {
                     symbol: bodySubject.symbol,
-                    name: bodySubject.name
-                }},
+                    name: bodySubject.name,
+                    custom: false
+                },
                 {upsert: true},
                 err => {
-                    res.send(err? response(false, err) : response(true, `Subject ${bodySubject.symbol} POSTed successfully.`));
+                    if (err) {
+                        logger.error(err);
+                    }
                 }
             )
         }
+        res.send(response(true, "Operation finished."));
     })
 
 module.exports = router;

@@ -1,19 +1,19 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const Course = require('../models/Course');
+const Course = require("../models/Course");
+const Subject = require("../models/Subject");
+
 const response = require("../src/constructors/responseBody");
 const authenticate = require("../src/middleware/authenticate");
+const logging = require("../src/logger");
 
 router.route("/")
     .all(authenticate)
     .get((_req, res) => {
         Course.find((err, courses) => {
-            if (err) {
-                res.send(response(false, err));
-            }
-            res.send(response(true, "", {courses: courses}));
-        })
+            res.send(err? response(false, err) : response(true, "", {courses: courses}));
+        });
     })
     .post((req, res) => {
         if (!req.body) {
@@ -22,13 +22,18 @@ router.route("/")
             res.send(response(false, "HTTP body malformed: empty or missing 'course' field."));
         }
 
-        const course = Course.create(req.body.course, req.body.custom);
-        course.save(err => {
+        Subject.findById(req.body.course.subject, (err, subject) => {
             if (err) {
                 res.send(response(false, err));
+            } else if (subject) {
+                const course = Course.create(req.body.course, req.body.custom);
+                course.save(err => {
+                    res.send(err? response(false, err) : response(true, "Course saved."));
+                });
+            } else {
+                logging.debug(`Invalid subject id ${req.body.course.subject}.`);
             }
         });
-        res.send(response(true, ""));
     })
 
 router.route("/update")

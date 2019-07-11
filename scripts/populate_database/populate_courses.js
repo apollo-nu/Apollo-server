@@ -1,5 +1,5 @@
 const axios = require("axios");
-const config = require("../../config/db")["dev"]; //change this between prod/dev when needed
+const config = require("../../config/db")["development"]; //change this between prod/dev when needed
 const logger = require("../../src/logger");
 
 COURSE_API_URL = "https://api.asg.northwestern.edu/courses/";
@@ -42,11 +42,13 @@ function getCourses(subjects, term) {
             }
         })
             .then(response => {
-                const data = response.data
+                const data = response.data;
+                data.subject = subject._id;
                 courses = courses.concat(data);
                 if (data.error) {
                     logger.error(data.error);
-                } else if (++responseCount === subjects.length) {
+                } 
+                if (++responseCount === subjects.length) {
                     refreshCourses(courses);
                 }
             })

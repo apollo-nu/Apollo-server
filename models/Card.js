@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const CardSchema = new Schema({
-    course: [{type: Schema.Types.ObjectId, ref: "Course"}]
+    course: {type: Schema.Types.ObjectId, ref: "Course"}
 });
 
 RowSchema.statics.create = function(obj) {

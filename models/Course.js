@@ -6,7 +6,7 @@ const CourseSchema = new Schema({
     id: Number,
     title: String,
     school: String,
-    subject: String, //make this an ObjectId reference to Subject
+    subject: {type: Schema.Types.ObjectId, ref: "Subject"},
     attributes: String,
     requirements: String,
     custom: Boolean,
