@@ -10,25 +10,82 @@ if (!fs.existsSync(logDir)) {
 const path = require("path");
 const filename = path.join(logDir, `${env}.log`);
 
-const curr_file = module.parent.filename.split("/").pop();
-const logFormat = format.printf(info => `${info.timestamp} - ${curr_file}:LINE_NUMBER [${info.level}] ${info.message}`);
+const logFormat = format.printf(info => `${info.timestamp} [${info.level}] ${info.message}`);
 
-module.exports = createLogger({
+const logger = createLogger({
     level: level,
-    format: format.combine(
-        format.timestamp({
-            format: "YYYY-MM-DD HH:mm:ss.sss"
-        }),
-        logFormat
-    ),
     transports: [
         new transports.Console({
             level: level,
             format: format.combine(
                 format.colorize(),
+                format.timestamp({
+                    format: "YYYY-MM-DD HH:mm:ss.sss"
+                }),
                 logFormat
             )
         }),
         new transports.File({filename})
     ]
 });
+
+// https://gist.github.com/ludwig/b47b5de4a4c53235825af3b4cef4869a
+function formatLog(args) {
+    args = Array.prototype.slice.call(args);
+    const stackInfo = getStackInfo(1);
+    if (stackInfo) {
+        const calleeStr = `(${stackInfo.relativePath}:${stackInfo.line})`;
+        if (typeof(args[0]) === 'string') {
+            args[0] = calleeStr + ' ' + args[0];
+        } else {
+            args.unshift(calleeStr);
+        }
+    }
+    return args;
+}
+
+function getStackInfo(stackIndex) {
+    const stacklist = (new Error()).stack.split('\n').slice(3);
+
+    const stackReg = /at\s+(.*)\s+\((.*):(\d*):(\d*)\)/gi;
+    const stackReg2 = /at\s+()(.*):(\d*):(\d*)/gi;
+
+    const s = stacklist[stackIndex] || stacklist[0];
+    const sp = stackReg.exec(s) || stackReg2.exec(s);
+
+    if (sp && sp.length === 5) {
+        const PROJECT_ROOT = path.join(__dirname, '..');
+        return {
+            method: sp[1],
+            relativePath: path.relative(PROJECT_ROOT, sp[2]),
+            line: sp[3],
+            pos: sp[4],
+            file: path.basename(sp[2]),
+            stack: stacklist.join('\n')
+        };
+    }
+}
+
+logger.stream = {
+    write: (message) => {
+        logger.info(message)
+    }
+}
+
+module.exports.debug = module.exports.log = () => {
+    logger.debug.apply(logger, formatLog(arguments));
+}
+
+module.exports.info = () => {
+    logger.info.apply(logger, formatLog(arguments));
+}
+
+module.exports.warn = () => {
+    logger.warn.apply(logger, formatLog(arguments));
+}
+
+module.exports.error = () => {
+    logger.error.apply(logger, formatLog(arguments));
+}
+
+module.exports.stream = logger.stream
