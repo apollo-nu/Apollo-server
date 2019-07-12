@@ -1,7 +1,7 @@
-"use strict"
+"use strict";
 
 const axios = require("axios");
-const config = require("../../config/db")["development"]; //change this between prod/dev when needed
+const config = require("../../config/db").development; //change this between prod/dev when needed
 const logger = require("../../src/logger");
 
 COURSE_API_URL = "https://api.asg.northwestern.edu/courses/";
@@ -28,7 +28,7 @@ function getSubjects(term) {
         })
         .catch(err => {
             logger.error(err);
-        })
+        });
 }
 
 function getCourses(subjects, term) {
@@ -45,7 +45,7 @@ function getCourses(subjects, term) {
         })
             .then(response => {
                 const data = response.data;
-                for (course of data) {
+                for (let course of data) {
                     course.subject = subject._id;
                 }
                 courses = courses.concat(data);
@@ -56,12 +56,12 @@ function getCourses(subjects, term) {
                     refreshCourses(courses);
                 }
             })
-            .catch(_err => {
+            .catch(() => {
                 logger.warn(`Could not retrieve data for subject ${subject.symbol}.`);
                 if (++responseCount === subjects.length) {
                     refreshCourses(courses);
                 }
-            })
+            });
     }
 }
 
@@ -74,7 +74,7 @@ function refreshCourses(courses) {
             if (!response.ok) {
                 logger.error(response.message);
             }
-        })
+        });
 }
 
 module.exports = getSubjects;

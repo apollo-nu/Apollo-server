@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 const {createLogger, format, transports} = require("winston");
 const env = process.env.NODE_ENV;
@@ -32,7 +32,7 @@ const logger = createLogger({
 });
 
 function formatLog(args) {
-    args = Array.prototype.slice.call(args)
+    args = Array.prototype.slice.call(args);
 
     // These formattings are too verbose for prod
     if (env !== "production") {
@@ -75,24 +75,24 @@ function getStackInfo(stackIndex) {
 
 logger.stream = {
     write: (message) => {
-        logger.info(message)
+        logger.info(message);
     }
-}
+};
 
 module.exports.debug = module.exports.log = function() {
     logger.debug.apply(logger, formatLog(arguments));
-}
+};
 
 module.exports.info = function() {
     logger.info.apply(logger, formatLog(arguments));
-}
+};
 
 module.exports.warn = function() {
     logger.warn.apply(logger, formatLog(arguments));
-}
+};
 
 module.exports.error = function() {
     logger.error.apply(logger, formatLog(arguments));
-}
+};
 
-module.exports.stream = logger.stream
+module.exports.stream = logger.stream;

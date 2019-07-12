@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
@@ -15,6 +15,6 @@ SubjectSchema.statics.create = function(obj, custom) {
     subject.symbol = obj.symbol;
     subject.name = obj.name;
     return subject;
-}
+};
 
 module.exports = mongoose.model("Subject", SubjectSchema);

@@ -1,7 +1,7 @@
-"use strict"
+"use strict";
 
 const axios = require("axios");
-const config = require("../../config/db")["development"]; //change this between prod/dev when needed
+const config = require("../../config/db").development; //change this between prod/dev when needed
 const logger = require("../../src/logger");
 
 COURSE_API_URL = "https://api.asg.northwestern.edu/subjects";
@@ -23,7 +23,7 @@ function getSubjects() {
         })
         .catch(err => {
             logger.error(err);
-        })
+        });
 }
 
 function refreshSubjects(subjects) {
@@ -38,7 +38,7 @@ function refreshSubjects(subjects) {
         })
         .catch(err => {
             logger.error(err);
-        })
+        });
 }
 
 module.exports = getSubjects;

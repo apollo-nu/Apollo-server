@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 class IndicativeOptions {
     constructor(rules, messages, schema) {

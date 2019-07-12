@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 const express = require("express");
 const router = express.Router();
@@ -17,7 +17,7 @@ router.route("/")
             .populate("subject")
             .exec((err, courses) => {
                 res.send(err? response(false, err) : response(true, "", {courses: courses}));
-            })
+            });
     })
     .post((req, res) => {
         if (!req.body) {
@@ -38,7 +38,7 @@ router.route("/")
                 logging.debug(`Invalid subject id ${req.body.course.subject}.`);
             }
         });
-    })
+    });
 
 router.route("/update")
     .post((req, res) => {
@@ -69,7 +69,7 @@ router.route("/update")
                     }
                 });
         }
-        res.send(response(true, "Operation finished."))
-    })
+        res.send(response(true, "Operation finished."));
+    });
 
 module.exports = router;

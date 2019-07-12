@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 const IndicativeOptions = require("./IndicativeOptions");
 
@@ -14,4 +14,4 @@ module.exports = {
         email: "normalize_email",
         password: "strip_tags"
     })
-}
+};

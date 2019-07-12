@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 const express = require("express");
 const router = express.Router();
@@ -24,8 +24,8 @@ router.route("/")
         const subject = Subject.create(req.body.subject, false);
         subject.save(err => {
             res.send(err? response(false, err) : response(true, "Subjects POSTed successfully."));
-        })
-    })
+        });
+    });
 
 router.route("/update")
     .post((req, res) => {
@@ -46,6 +46,6 @@ router.route("/update")
             });
         }
         res.send(response(true, "Operation finished."));
-    })
+    });
 
 module.exports = router;

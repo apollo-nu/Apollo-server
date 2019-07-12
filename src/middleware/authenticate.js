@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 const response = require("../constructors/responseBody");
 const jwt = require("jsonwebtoken");
@@ -22,4 +22,4 @@ module.exports = (req, res, next) => {
     } else {
         res.send(response(false, "No token provided"));
     }
-}
+};

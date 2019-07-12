@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
@@ -24,6 +24,6 @@ CourseSchema.statics.create = function(obj, custom) {
     course.requirements = obj.requirements;
     course.custom = custom;
     return course;
-}
+};
 
 module.exports = mongoose.model("Course", CourseSchema);

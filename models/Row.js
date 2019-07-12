@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
@@ -13,6 +13,6 @@ RowSchema.statics.create = function(obj) {
     let row = new mongoose.model("Row", RowSchema)();
     
     return row;
-}
+};
 
 module.exports = mongoose.model("Row", RowSchema);
