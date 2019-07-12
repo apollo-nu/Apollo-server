@@ -29,45 +29,44 @@ const logger = createLogger({
     ]
 });
 
-// Concept/Code for filename & line number logging:
-// https://gist.github.com/ludwig/b47b5de4a4c53235825af3b4cef4869a
 function formatLog(args) {
     args = Array.prototype.slice.call(args)
 
-    // Format JSON
-    args.forEach((arg, i) => {
-        if (typeof(arg) === "object") {
-            args[i] = JSON.stringify(arg);
-        }
-    });
+    // These formattings are too verbose for prod
+    if (env !== "production") {
+        // Format JSON
+        args.forEach((arg, i) => {
+            if (typeof(arg) === "object") {
+                args[i] = JSON.stringify(arg);
+            }
+        });
 
-    // Add stack info
-    const stackInfo = getStackInfo(1);
-    if (stackInfo) {
-        const calleeStr = `(${stackInfo.relativePath}:${stackInfo.line})`;
-        args.unshift(calleeStr);
+        // Add stack info
+        const stackInfo = getStackInfo(1);
+        if (stackInfo) {
+            const calleeStr = `(${stackInfo.file}:${stackInfo.line})`;
+            args.unshift(calleeStr);
+        }
     }
+
+    // Handle multiple arguments
     return [args.join(" ")];
 }
 
+// https://gist.github.com/ludwig/b47b5de4a4c53235825af3b4cef4869a
 function getStackInfo(stackIndex) {
     const stacklist = (new Error()).stack.split('\n').slice(3);
 
     const stackReg = /at\s+(.*)\s+\((.*):(\d*):(\d*)\)/gi;
-    const stackReg2 = /at\s+()(.*):(\d*):(\d*)/gi;
+    const stackRegBackup = /at\s+()(.*):(\d*):(\d*)/gi;
 
     const s = stacklist[stackIndex] || stacklist[0];
-    const sp = stackReg.exec(s) || stackReg2.exec(s);
+    const stackRegArr = stackReg.exec(s) || stackRegBackup.exec(s);
 
-    if (sp && sp.length === 5) {
-        const PROJECT_ROOT = path.join(__dirname, "..");
+    if (stackRegArr && stackRegArr.length === 5) {
         return {
-            method: sp[1],
-            relativePath: path.relative(PROJECT_ROOT, sp[2]),
-            line: sp[3],
-            pos: sp[4],
-            file: path.basename(sp[2]),
-            stack: stacklist.join("\n")
+            line: stackRegArr[3],
+            file: path.basename(stackRegArr[2])
         };
     }
 }
