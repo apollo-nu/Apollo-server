@@ -29,18 +29,23 @@ const logger = createLogger({
     ]
 });
 
+// Concept/Code for filename & line number logging:
 // https://gist.github.com/ludwig/b47b5de4a4c53235825af3b4cef4869a
 function formatLog(args) {
+    args = Array.prototype.slice.call(args)
+    // Format JSON
+    if (typeof(args[0]) === "string") {
+
+    }
+
+    // Add stack info
     const stackInfo = getStackInfo(1);
     if (stackInfo) {
         const calleeStr = `(${stackInfo.relativePath}:${stackInfo.line})`;
-        if (typeof(args[0]) === 'string') {
-            args[0] = calleeStr + ' ' + args[0];
-        } else {
-            args.unshift(calleeStr);
-        }
+        args.unshift(calleeStr);
     }
-    return args;
+    console.log(args);
+    return [args.join(" ")];
 }
 
 function getStackInfo(stackIndex) {
@@ -53,14 +58,14 @@ function getStackInfo(stackIndex) {
     const sp = stackReg.exec(s) || stackReg2.exec(s);
 
     if (sp && sp.length === 5) {
-        const PROJECT_ROOT = path.join(__dirname, '..');
+        const PROJECT_ROOT = path.join(__dirname, "..");
         return {
             method: sp[1],
             relativePath: path.relative(PROJECT_ROOT, sp[2]),
             line: sp[3],
             pos: sp[4],
             file: path.basename(sp[2]),
-            stack: stacklist.join('\n')
+            stack: stacklist.join("\n")
         };
     }
 }
