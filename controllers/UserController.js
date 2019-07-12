@@ -1,3 +1,5 @@
+"use strict";
+
 const express = require("express");
 const router = express.Router();
 
@@ -26,8 +28,8 @@ router.route("/createAccount")
             } else {
                 res.send(response(false, response.message));
             }
-        })
-    })
+        });
+    });
 
 router.route("/login")
     .post((req, res) => {
@@ -51,20 +53,20 @@ router.route("/login")
                     res.send(response(false, "Failed to validate user."));
                 }
             }
-        })
-    })
+        });
+    });
 
 router.route("/:id")
     .all(authenticate)
     .get((req, res) => {
-        User.findOne({_id: req.params["id"]}, (err, user) => {
+        User.findOne({_id: req.params.id}, (err, user) => {
             res.send(err? response(false, err) : response(true, "", {user: user}));
         });
     })
     .put((req, res) => {
-        User.findOneAndUpdate({_id: req.params["id"]}, req.body.user, (err, user) => {
+        User.findOneAndUpdate({_id: req.params.id}, req.body.user, err => {
             res.send(err? (response(false, err)) : response(true, "User updated successfully."));
-        })
-    })
+        });
+    });
 
 module.exports = router;

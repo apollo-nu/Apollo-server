@@ -1,3 +1,5 @@
+"use strict";
+
 const morgan = require("morgan");
 const loggerFormat = (process.env.NODE_ENV === "production")? "tiny" : "dev";
 

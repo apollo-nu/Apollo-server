@@ -1,0 +1,12 @@
+node_modules/
+log/
+
+package.json
+package-lock.json
+.env
+
+CHANGELOG.md
+README.md
+LICENCE
+
+scripts/populateDatabase/populateCourses.js

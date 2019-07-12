@@ -56,7 +56,7 @@ app.listen(PORT);
 logger.info("Application listening on PORT: " + PORT);
 
 if (env === "production") {
-    require("./scripts/populate_database/set_timers")();
+    require("./scripts/populateDatabase/setTimers")();
 }
 
 module.exports = app;

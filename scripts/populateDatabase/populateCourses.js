@@ -1,12 +1,14 @@
+"use strict";
+
 const axios = require("axios");
-const config = require("../../config/db")["development"]; //change this between prod/dev when needed
+const config = require("../../config/db").development; //change this between prod/dev when needed
 const logger = require("../../src/logger");
 
-COURSE_API_URL = "https://api.asg.northwestern.edu/courses/";
-APOLLO_API_URL_SUBJECTS = config.host + "/subjects";
-APOLLO_API_URL_COURSES = config.host + "/courses";
+const COURSE_API_URL = "https://api.asg.northwestern.edu/courses/";
+const APOLLO_API_URL_SUBJECTS = config.host + "/subjects";
+const APOLLO_API_URL_COURSES = config.host + "/courses";
 
-DEFAULT_TERMS = [4720, 4730, 4740, 4750]; //Fall 2018, Winter 2019, Spring 2019, Fall 2019
+const DEFAULT_TERMS = [4720, 4730, 4740, 4750]; //Fall 2018, Winter 2019, Spring 2019, Fall 2019
 
 function getSubjects(term) {
     axios.get(APOLLO_API_URL_SUBJECTS)
@@ -26,13 +28,10 @@ function getSubjects(term) {
         })
         .catch(err => {
             logger.error(err);
-        })
+        });
 }
 
-function getCourses(subjects, term) {
-    let responseCount = 0;
-    let courses = [];
-    
+function getCourses(subjects, term) { 
     for (let subject of subjects) {
         axios.get(COURSE_API_URL, {
             params: {
@@ -43,27 +42,21 @@ function getCourses(subjects, term) {
         })
             .then(response => {
                 const data = response.data;
-                for (course of data) {
-                    course.subject = subject._id;
-                }
-                courses = courses.concat(data);
                 if (data.error) {
                     logger.error(data.error);
-                } 
-                if (++responseCount === subjects.length) {
-                    refreshCourses(courses);
                 }
+                for (let course of data) {
+                    course.subject = subject._id;
+                }
+                postCourses(data);
             })
-            .catch(_err => {
+            .catch(() => {
                 logger.warn(`Could not retrieve data for subject ${subject.symbol}.`);
-                if (++responseCount === subjects.length) {
-                    refreshCourses(courses);
-                }
-            })
+            });
     }
 }
 
-function refreshCourses(courses) {
+function postCourses(courses) {
     axios.post(APOLLO_API_URL_COURSES + "/update", {
         courses: courses
     })
@@ -72,7 +65,7 @@ function refreshCourses(courses) {
             if (!response.ok) {
                 logger.error(response.message);
             }
-        })
+        });
 }
 
 module.exports = getSubjects;

@@ -1,8 +1,12 @@
+"use strict";
+
+const env = "" + process.env.NODE_ENV;
+const config = require("../../config/db")[env || "development"];
 const logger = require("../../src/logger");
 
-const PING_TIMER = 1750000; //~29 mins
-const SUBJECT_TIMER = 123456789 //DO NOT USE! -> this number must fit in a 32 bit signed int or it will default to 1
-const COURSE_TIMER = 604800000; //1 week
+const PING_TIMER = 1750000; // ~29 mins
+const SUBJECT_TIMER = Math.pow(2, 31) - 1; // max 32-bit int, ~24 days
+const COURSE_TIMER = 604800000; // 1 week
 
 function ping() {
     const axios = require("axios");
@@ -12,21 +16,20 @@ function ping() {
 }
 
 function populateSubjects() {
-    logger.warn("Do not set this function (populateSubjects) on a timer.");
     setInterval(() => {
-        require("./populate_subjects")();
+        require("./populateSubjects")();
     }, SUBJECT_TIMER);
 }
 
 function populateCourses() {
     setInterval(() => {
-        require("./populate_courses")();
+        require("./populateCourses")();
     }, COURSE_TIMER);
 }
 
 module.exports = () => {
     logger.info("Running database population scripts.");
     ping();
-    //populateSubjects();
+    populateSubjects();
     populateCourses();
-}
+};

@@ -1,3 +1,5 @@
+"use strict";
+
 const indicative = require("indicative");
 const validate = indicative.validator.validate;
 const sanitize = indicative.sanitizer.sanitize;
@@ -23,5 +25,5 @@ module.exports = (data, dataType, callback) => {
         })
         .catch(err => {
             callback(response(false, err, data));
-        })
-}
+        });
+};
