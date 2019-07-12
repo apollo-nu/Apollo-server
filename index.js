@@ -54,6 +54,7 @@ app.use("/users", UserController);
 const PORT = process.env.PORT || 8081;
 app.listen(PORT);
 logger.info("Application listening on PORT: " + PORT);
+logger.debug({hi: "hi", yo: "yo"})
 
 if (env === "production") {
     require("./scripts/populate_database/set_timers")();

@@ -33,10 +33,13 @@ const logger = createLogger({
 // https://gist.github.com/ludwig/b47b5de4a4c53235825af3b4cef4869a
 function formatLog(args) {
     args = Array.prototype.slice.call(args)
-    // Format JSON
-    if (typeof(args[0]) === "string") {
 
-    }
+    // Format JSON
+    args.forEach((arg, i) => {
+        if (typeof(arg) === "object") {
+            args[i] = JSON.stringify(arg);
+        }
+    });
 
     // Add stack info
     const stackInfo = getStackInfo(1);
@@ -44,7 +47,6 @@ function formatLog(args) {
         const calleeStr = `(${stackInfo.relativePath}:${stackInfo.line})`;
         args.unshift(calleeStr);
     }
-    console.log(args);
     return [args.join(" ")];
 }
 
