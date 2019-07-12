@@ -1,3 +1,5 @@
+"use strict"
+
 const indicative = require("indicative");
 const validate = indicative.validator.validate;
 const sanitize = indicative.sanitizer.sanitize;

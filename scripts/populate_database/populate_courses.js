@@ -1,3 +1,5 @@
+"use strict"
+
 const axios = require("axios");
 const config = require("../../config/db")["development"]; //change this between prod/dev when needed
 const logger = require("../../src/logger");

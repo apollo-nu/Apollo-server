@@ -1,3 +1,5 @@
+"use strict"
+
 const response = require("../constructors/responseBody");
 const jwt = require("jsonwebtoken");
 

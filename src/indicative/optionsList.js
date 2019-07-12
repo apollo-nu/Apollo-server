@@ -1,3 +1,5 @@
+"use strict"
+
 const IndicativeOptions = require("./IndicativeOptions");
 
 module.exports = {

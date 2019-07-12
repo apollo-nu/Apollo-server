@@ -1,3 +1,5 @@
+"use strict"
+
 const {createLogger, format, transports} = require("winston");
 const env = process.env.NODE_ENV;
 const level = env === "production"? "info" : "debug";

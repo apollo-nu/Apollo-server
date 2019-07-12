@@ -1,3 +1,5 @@
+"use strict"
+
 module.exports = {
     "development":{
         "host":"http://localhost:8081",

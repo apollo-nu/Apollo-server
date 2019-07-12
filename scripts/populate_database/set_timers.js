@@ -1,3 +1,5 @@
+"use strict"
+
 const logger = require("../../src/logger");
 
 const PING_TIMER = 1750000; //~29 mins

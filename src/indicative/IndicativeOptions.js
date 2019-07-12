@@ -1,3 +1,5 @@
+"use strict"
+
 class IndicativeOptions {
     constructor(rules, messages, schema) {
         this.rules = rules;
