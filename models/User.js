@@ -20,6 +20,11 @@ UserSchema.methods.validateUser = function(password) {
 
 UserSchema.statics.create = function(obj) {
     let user = new mongoose.model("User", UserSchema)();
+    if (!obj.email) {
+        throw new Error("Invalid User Object: Email Missing");
+    } else if (!obj.password) {
+        throw new Error("Invalid User Object:  Password Missing");
+    }
     user.email = obj.email;
     user.password = generateHash(obj.password);
     return user;
