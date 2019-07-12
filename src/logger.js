@@ -19,7 +19,7 @@ const logger = createLogger({
             level: level,
             format: format.combine(
                 format.colorize(),
-                format.timestamp({
+                    format.timestamp({
                     format: "YYYY-MM-DD HH:mm:ss.sss"
                 }),
                 logFormat
@@ -31,7 +31,6 @@ const logger = createLogger({
 
 // https://gist.github.com/ludwig/b47b5de4a4c53235825af3b4cef4869a
 function formatLog(args) {
-    args = Array.prototype.slice.call(args);
     const stackInfo = getStackInfo(1);
     if (stackInfo) {
         const calleeStr = `(${stackInfo.relativePath}:${stackInfo.line})`;
@@ -72,19 +71,19 @@ logger.stream = {
     }
 }
 
-module.exports.debug = module.exports.log = () => {
+module.exports.debug = module.exports.log = function() {
     logger.debug.apply(logger, formatLog(arguments));
 }
 
-module.exports.info = () => {
+module.exports.info = function() {
     logger.info.apply(logger, formatLog(arguments));
 }
 
-module.exports.warn = () => {
+module.exports.warn = function() {
     logger.warn.apply(logger, formatLog(arguments));
 }
 
-module.exports.error = () => {
+module.exports.error = function() {
     logger.error.apply(logger, formatLog(arguments));
 }
 
