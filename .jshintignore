@@ -8,3 +8,5 @@ package-lock.json
 CHANGELOG.md
 README.md
 LICENCE
+
+scripts/populateDatabase/populateCourses.js

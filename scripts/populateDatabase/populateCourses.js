@@ -31,10 +31,7 @@ function getSubjects(term) {
         });
 }
 
-function getCourses(subjects, term) {
-    let responseCount = 0;
-    let courses = [];
-    
+function getCourses(subjects, term) { 
     for (let subject of subjects) {
         axios.get(COURSE_API_URL, {
             params: {
@@ -45,27 +42,21 @@ function getCourses(subjects, term) {
         })
             .then(response => {
                 const data = response.data;
+                if (data.error) {
+                    logger.error(data.error);
+                }
                 for (let course of data) {
                     course.subject = subject._id;
                 }
-                courses = courses.concat(data);
-                if (data.error) {
-                    logger.error(data.error);
-                } 
-                if (++responseCount === subjects.length) {
-                    refreshCourses(courses);
-                }
+                postCourses(data);
             })
             .catch(() => {
                 logger.warn(`Could not retrieve data for subject ${subject.symbol}.`);
-                if (++responseCount === subjects.length) {
-                    refreshCourses(courses);
-                }
             });
     }
 }
 
-function refreshCourses(courses) {
+function postCourses(courses) {
     axios.post(APOLLO_API_URL_COURSES + "/update", {
         courses: courses
     })

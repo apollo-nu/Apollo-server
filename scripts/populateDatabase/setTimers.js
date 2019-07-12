@@ -18,13 +18,13 @@ function ping() {
 /* function populateSubjects() {
     logger.warn("Do not set this function (populateSubjects) on a timer.");
     setInterval(() => {
-        require("./populate_subjects")();
+        require("./populateSubjects")();
     }, SUBJECT_TIMER);
 } */
 
 function populateCourses() {
     setInterval(() => {
-        require("./populate_courses")();
+        require("./populateCourses")();
     }, COURSE_TIMER);
 }
 
