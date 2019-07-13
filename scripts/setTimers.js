@@ -17,13 +17,13 @@ function ping() {
 
 function populateSubjects() {
     setInterval(() => {
-        require("./populateSubjects")();
+        require("./populateDatabase/populateSubjects")();
     }, SUBJECT_TIMER);
 }
 
 function populateCourses() {
     setInterval(() => {
-        require("./populateCourses")();
+        require("./populateDatabase/populateCourses")();
     }, COURSE_TIMER);
 }
 
