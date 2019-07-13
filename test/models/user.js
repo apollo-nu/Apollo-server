@@ -10,14 +10,14 @@ const User = require("../../models/User");
 const EMAIL = "email123@gmail.com";
 const PASSWORD = "password";
 const BAD_PASSWORD = "password123";
-const validUserObj = {
+const validUser = {
     email: EMAIL,
     password: PASSWORD
 };
-const invalidUserObjEmail = {
+const invalidUserWithEmail = {
     email: EMAIL
 };
-const invalidUserObjPassword = {
+const invalidUserWithPassword = {
     password: PASSWORD
 };
 
@@ -33,23 +33,22 @@ describe("User Schema Tests", () => {
 
     context("calls User.create()", () => {
         it("should initialize a valid User object", () => {
-            const user = User.create(validUserObj);
+            const user = User.create(validUser);
             expect(user).to.be.an("object");
-            expect(user.email).to.be.a("string");
             expect(user.email).to.equal(EMAIL);
-            expect(user.password).to.be.a("string");
+            expect(user.password).to.not.be.undefined();
             expect(user.board).to.be.undefined();
         });
 
-        it("should throw an exception when an invalid object is passed into the constructor", () => {
-            expect(() => {User.create(invalidUserObjEmail);}).to.throw();
-            expect(() => {User.create(invalidUserObjPassword);}).to.throw();
+        it("should throw an exception when an invalid object is passed", () => {
+            expect(() => {User.create(invalidUserWithEmail);}).to.throw();
+            expect(() => {User.create(invalidUserWithPassword);}).to.throw();
         });
     });
 
     context("calls generateHash()", () => {
         it("should store a hash of a user's password when create() is called", () => {
-            const user = User.create(validUserObj);
+            const user = User.create(validUser);
             expect(user).to.be.an("object");
             expect(user.password).to.be.a("string");
             expect(user.password).to.not.equal(PASSWORD);
@@ -58,12 +57,12 @@ describe("User Schema Tests", () => {
 
     context("calls validateUser()", () => {
         it("should return true when passed the correct password", () => {
-            const user = User.create(validUserObj);
+            const user = User.create(validUser);
             expect(user.validateUser(PASSWORD)).to.be.true();
         });
         
         it("should return false when passed an incorrect password", () => {
-            const user = User.create(validUserObj);
+            const user = User.create(validUser);
             expect(user.validateUser(BAD_PASSWORD)).to.be.false();
         });
     });

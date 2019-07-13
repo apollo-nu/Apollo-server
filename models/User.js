@@ -23,7 +23,7 @@ UserSchema.statics.create = function(obj) {
     if (!obj.email) {
         throw new Error("Invalid User Object: Email Missing");
     } else if (!obj.password) {
-        throw new Error("Invalid User Object:  Password Missing");
+        throw new Error("Invalid User Object: Password Missing");
     }
     user.email = obj.email;
     user.password = generateHash(obj.password);

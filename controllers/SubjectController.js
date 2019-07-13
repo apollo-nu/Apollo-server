@@ -21,7 +21,7 @@ router.route("/")
         } else if (!req.body.subject) {
             res.send(response(false, "HTTP body malformed: empty or missing 'subject' field."));
         }
-        const subject = Subject.create(req.body.subject, false);
+        const subject = Subject.create(req.body.subject);
         subject.save(err => {
             res.send(err? response(false, err) : response(true, "Subjects POSTed successfully."));
         });
@@ -38,7 +38,6 @@ router.route("/update")
         let subjects = req.body.subjects;
         subjects = typeof(subjects) === "string"? [subjects] : subjects;
         for (let bodySubject of subjects) {
-            bodySubject.custom = false;
             Subject.findOneAndReplace(bodySubject, bodySubject, {upsert: true}, err => {
                 if (err) {
                     logger.error(err);
