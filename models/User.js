@@ -7,7 +7,6 @@ const bcrypt = require("bcrypt");
 const UserSchema = new Schema({
     email: String,
     password: String,
-    boards: [{type: Schema.Types.ObjectId, ref: "Board"}]
 });
 
 function generateHash(password) {

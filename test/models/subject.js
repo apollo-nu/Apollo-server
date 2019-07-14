@@ -22,9 +22,11 @@ describe("Subject Schema Tests", () => {
     context("calls Subject constructor", () => {
         it("should initialize a Subject object with empty fields", () => {
             const emptySubject = new Subject();
-            expect(emptySubject.symbol).to.be.undefined();
-            expect(emptySubject.name).to.be.undefined();
-            expect(emptySubject.custom).to.be.undefined();
+            Object.keys(emptySubject.toObject()).forEach(key => {
+                if (key !== "_id") {
+                    expect(emptySubject[key]).to.be.undefined();
+                }
+            });
         });
     });
 
@@ -34,6 +36,7 @@ describe("Subject Schema Tests", () => {
             expect(subject).to.be.an("object");
             expect(subject.symbol).to.equal("AAA");
             expect(subject.name).to.equal("Subject");
+            expect(subject.custom).to.not.be.undefined();
             expect(subject.custom).to.be.true();
         });
 
@@ -42,6 +45,7 @@ describe("Subject Schema Tests", () => {
             expect(subject).to.be.an("object");
             expect(subject.symbol).to.equal("AAA");
             expect(subject.name).to.equal("Subject");
+            expect(subject.custom).to.not.be.undefined();
             expect(subject.custom).to.be.false();
         });
 
