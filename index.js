@@ -59,5 +59,6 @@ logger.info("Application listening on PORT: " + PORT);
 if (env === "production") {
     require("./scripts/setTimers")();
 }
+require("./scripts/populateDatabase/populateCourses")();
 
 module.exports = app;

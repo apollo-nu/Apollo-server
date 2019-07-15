@@ -20,6 +20,6 @@ TermSchema.statics.create = function(obj) {
     term.start_date = obj.start_date;
     term.end_date = obj.end_date;
     return term;
-}
+};
 
 module.exports = mongoose.model("Term", TermSchema);

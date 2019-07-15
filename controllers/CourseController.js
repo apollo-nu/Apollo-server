@@ -48,20 +48,14 @@ router.route("/update")
             res.send(response(false, "HTTP body malformed: empty or missing 'courses' field."));
         }
         for (let bodyCourse of req.body.courses) {
+            let course = Course.create(bodyCourse);
+            delete course._id;
             Course.findOneAndReplace(
                 {
                     id: bodyCourse.id,
                     custom: false
                 },
-                {
-                    id: bodyCourse.id,
-                    title: bodyCourse.title,
-                    school: bodyCourse.school,
-                    subject: bodyCourse.subject,
-                    attributes: bodyCourse.attributes,
-                    requirements: bodyCourse.requirements,
-                    custom: false
-                },
+                course.toObject(),
                 {upsert: true},
                 err => {
                     if (err) {

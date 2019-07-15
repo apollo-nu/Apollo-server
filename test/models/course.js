@@ -9,20 +9,24 @@ const Course = require("../../models/Course");
 const mongoose = require("mongoose");
 
 const subjectId = mongoose.Types.ObjectId();
+// const termId = mongoose.Types.ObjectId();
 const validCourse = {
     id: "1234",
     title: "Course",
     school: "School",
+    instructor: {
+        name: "Instructor"
+    },
     subject: subjectId,
-    attributes: "Attributes",
-    requirements: "Requirements"
-};
-const invalidCourse = {
-    id: "1234",
-    title: "Course",
-    school: "School",
-    subject: subjectId,
-    attributes: "Attributes"
+    room: {
+        building_name: "Building",
+        name: "Room"
+    },
+    meeting_days: "MTuWThF",
+    start_time: "00:00",
+    end_time: "23:59",
+    // term: termId,
+    component: "Component"
 };
 
 describe("Course Schema Tests", () => {
@@ -41,12 +45,17 @@ describe("Course Schema Tests", () => {
         it("should initialize a valid Course object", () => {
             const course = Course.create(validCourse, true);
             expect(course).to.be.an("object");
-            expect(course.id).to.equal(1234);
-            expect(course.title).to.equal("Course");
-            expect(course.school).to.equal("School");
-            expect(course.subject).to.equal(subjectId);
-            expect(course.attributes).to.equal("Attributes");
-            expect(course.requirements).to.equal("Requirements");
+            expect(course.id).to.equal(parseInt(validCourse.id));
+            expect(course.title).to.equal(validCourse.title);
+            expect(course.school).to.equal(validCourse.school);
+            expect(course.instructor).to.equal(validCourse.instructor.name);
+            expect(course.subject).to.equal(validCourse.subject);
+            expect(course.room).to.equal(`${validCourse.room.building_name} ${validCourse.room.name}`);
+            expect(course.meeting_days).to.equal(validCourse.meeting_days);
+            expect(course.start_time).to.equal(validCourse.start_time);
+            expect(course.end_time).to.equal(validCourse.end_time);
+            // expect(course.term).to.equal(validCourse.term);
+            expect(course.component).to.equal(validCourse.component);
             expect(course.custom).to.not.be.undefined();
             expect(course.custom).to.be.true();
         });
@@ -54,18 +63,19 @@ describe("Course Schema Tests", () => {
         it("should initialize a valid Course object and set the 'custom' field when unspecified", () => {
             const course = Course.create(validCourse);
             expect(course).to.be.an("object");
-            expect(course.id).to.equal(1234);
-            expect(course.title).to.equal("Course");
-            expect(course.school).to.equal("School");
-            expect(course.subject).to.equal(subjectId);
-            expect(course.attributes).to.equal("Attributes");
-            expect(course.requirements).to.equal("Requirements");
+            expect(course.id).to.equal(parseInt(validCourse.id));
+            expect(course.title).to.equal(validCourse.title);
+            expect(course.school).to.equal(validCourse.school);
+            expect(course.instructor).to.equal(validCourse.instructor.name);
+            expect(course.subject).to.equal(validCourse.subject);
+            expect(course.room).to.equal(`${validCourse.room.building_name} ${validCourse.room.name}`);
+            expect(course.meeting_days).to.equal(validCourse.meeting_days);
+            expect(course.start_time).to.equal(validCourse.start_time);
+            expect(course.end_time).to.equal(validCourse.end_time);
+            // expect(course.term).to.equal(validCourse.term);
+            expect(course.component).to.equal(validCourse.component);
             expect(course.custom).to.not.be.undefined();
             expect(course.custom).to.be.false();
-        });
-
-        it("should throw an exception when an invalid object is passed", () => {
-            expect(() => {Course.create(invalidCourse);}).to.throw();
         });
     });
 });

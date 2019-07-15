@@ -4,7 +4,7 @@ const axios = require("axios");
 const config = require("../../config/db").development; //change this between prod/dev when needed
 const logger = require("../../src/logger");
 
-const COURSE_API_URL = "https://api.asg.northwestern.edu/courses/";
+const COURSE_API_URL = "https://api.asg.northwestern.edu/courses/details/";
 const APOLLO_API_URL_SUBJECTS = config.host + "/subjects";
 const APOLLO_API_URL_COURSES = config.host + "/courses";
 
