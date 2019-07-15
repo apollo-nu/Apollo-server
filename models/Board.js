@@ -6,7 +6,7 @@ const logger = require("../src/logger");
 
 const BoardSchema = new Schema({
     userId: {type: Schema.Types.ObjectId, ref: "User"},
-    name: String
+    term: {type: Schema.Types.ObjectId, ref: "Term"}
 });
 
 BoardSchema.statics.create = function(obj) {

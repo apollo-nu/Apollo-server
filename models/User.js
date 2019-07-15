@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 
 const UserSchema = new Schema({
     email: String,
-    password: String,
+    password: String
 });
 
 function generateHash(password) {

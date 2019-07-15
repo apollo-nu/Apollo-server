@@ -9,6 +9,7 @@ const CourseSchema = new Schema({
     title: String,
     school: String,
     subject: {type: Schema.Types.ObjectId, ref: "Subject"},
+    term: {type: Schema.Types.ObjectId, ref: "Term"},
     attributes: String,
     requirements: String,
     custom: Boolean,
