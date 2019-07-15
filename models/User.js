@@ -2,12 +2,11 @@
 
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const bcrypt = require("bcrypt-nodejs");
+const bcrypt = require("bcrypt");
 
 const UserSchema = new Schema({
     email: String,
     password: String,
-    boards: [{type: Schema.Types.ObjectId, ref: "Board"}]
 });
 
 function generateHash(password) {
@@ -20,6 +19,11 @@ UserSchema.methods.validateUser = function(password) {
 
 UserSchema.statics.create = function(obj) {
     let user = new mongoose.model("User", UserSchema)();
+    if (!obj.email) {
+        throw new Error("Invalid User Object: Email Missing");
+    } else if (!obj.password) {
+        throw new Error("Invalid User Object: Password Missing");
+    }
     user.email = obj.email;
     user.password = generateHash(obj.password);
     return user;

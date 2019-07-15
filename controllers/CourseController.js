@@ -3,12 +3,12 @@
 const express = require("express");
 const router = express.Router();
 
-const Course = require("../models/Course");
-const Subject = require("../models/Subject");
-
 const response = require("../src/constructors/responseBody");
 const authenticate = require("../src/middleware/authenticate");
 const logging = require("../src/logger");
+
+const Course = require("../models/Course");
+const Subject = require("../models/Subject");
 
 router.route("/")
     .all(authenticate)

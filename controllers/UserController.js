@@ -3,11 +3,12 @@
 const express = require("express");
 const router = express.Router();
 
-const User = require("../models/User");
 const response = require("../src/constructors/responseBody");
 const jwt = require("../src/constructors/jwt");
 const authenticate = require("../src/middleware/authenticate");
 const validate = require("../src/indicative/indicative");
+
+const User = require("../models/User");
 
 router.route("/createAccount")
     .post((req, res) => {

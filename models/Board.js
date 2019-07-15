@@ -5,8 +5,8 @@ const Schema = mongoose.Schema;
 const logger = require("../src/logger");
 
 const BoardSchema = new Schema({
-    name: String,
-    rows: [{type: Schema.Types.ObjectId, ref: "Row"}]
+    userId: {type: Schema.Types.ObjectId, ref: "User"},
+    name: String
 });
 
 BoardSchema.statics.create = function(obj) {

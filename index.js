@@ -13,6 +13,7 @@ app.use(bodyParser.urlencoded(bpConfig));
 app.use(bodyParser.json(bpConfig));
 
 // Forces non-HTTPS routes to redirect
+// To use, set up SSL and convert to an http/https server
 // const https = require("./src/middleware/https");
 // app.use(https);
 
@@ -56,7 +57,7 @@ app.listen(PORT);
 logger.info("Application listening on PORT: " + PORT);
 
 if (env === "production") {
-    require("./scripts/populateDatabase/setTimers")();
+    require("./scripts/setTimers")();
 }
 
 module.exports = app;

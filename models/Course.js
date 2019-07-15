@@ -16,13 +16,16 @@ const CourseSchema = new Schema({
 
 CourseSchema.statics.create = function(obj, custom) {
     let course = new mongoose.model("Course", CourseSchema)();
+    if (!(obj.id && obj.title && obj.school && obj.subject && obj.attributes && obj.requirements)) {
+        throw new Error("Invalid Course Object: One or More Fields Missing");
+    }
     course.id = obj.id;
     course.title = obj.title;
     course.school = obj.school;
     course.subject = obj.subject;
     course.attributes = obj.attributes;
     course.requirements = obj.requirements;
-    course.custom = custom;
+    course.custom = custom || false;
     return course;
 };
 
