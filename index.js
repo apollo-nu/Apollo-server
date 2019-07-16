@@ -42,10 +42,10 @@ const config = require("./config/db")[env || "development"];
 const mongoose = require("mongoose");
 mongoose.connect(config.database, { useNewUrlParser: true });
 
-const CourseController = require("./controllers/CourseController");
+const CourseController = require("./controllers/data/CourseController");
 const DefaultController = require("./controllers/DefaultController");
-const SubjectController = require("./controllers/SubjectController");
-const TermController = require("./controllers/TermController");
+const SubjectController = require("./controllers/data/SubjectController");
+const TermController = require("./controllers/data/TermController");
 const UserController = require("./controllers/UserController");
 
 app.use("/courses", CourseController);
