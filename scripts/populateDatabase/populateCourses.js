@@ -44,7 +44,7 @@ function getCourses(subjects, term) {
         axios.get(COURSE_API_URL, {
             params: {
                 "key": process.env.API_KEY,
-                "term": term,
+                "term": term.id,
                 "subject": subject.symbol
             }
         })
@@ -53,10 +53,11 @@ function getCourses(subjects, term) {
                 if (data.error) {
                     logger.error(data.error);
                 }
-                for (let course of data) {
+                postCourses(data.map(course => {
                     course.subject = subject._id;
-                }
-                postCourses(data);
+                    course.term = term._id;
+                    return course;
+                }));
             })
             .catch(() => {
                 logger.warn(`Could not retrieve data for subject ${subject.symbol}.`);

@@ -13,12 +13,13 @@ const CourseSchema = new Schema({
     meeting_days: String,
     start_time: String,
     end_time: String,
-    // term: {type: Schema.Types.ObjectId, ref: "Term"},
+    term: {type: Schema.Types.ObjectId, ref: "Term"},
     component: String,
-    custom: Boolean
+    custom: Boolean,
+    // user: {type: Schema.Types.ObjectId, ref: "User"}
 });
 
-CourseSchema.statics.create = function(obj, custom) {
+CourseSchema.statics.create = function(obj, custom, userId) {
     let course = new mongoose.model("Course", CourseSchema)();
     course.id = obj.id;
     course.title = obj.title;
@@ -29,9 +30,10 @@ CourseSchema.statics.create = function(obj, custom) {
     course.meeting_days = obj.meeting_days;
     course.start_time = obj.start_time;
     course.end_time = obj.end_time;
-    // course.term = obj.term;
+    course.term = obj.term;
     course.component = obj.component;
     course.custom = custom || false;
+    course.user = userId || null;
     return course;
 };
 
