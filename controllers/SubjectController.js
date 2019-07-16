@@ -4,7 +4,6 @@ const express = require("express");
 const router = express.Router();
 
 const response = require("../src/constructors/responseBody");
-const authenticate = require("../src/middleware/authenticate");
 const logger = require("../src/logger");
 
 const Subject = require("../models/Subject");
@@ -13,18 +12,6 @@ router.route("/")
     .get((_req, res) => {
         Subject.find((err, subjects) => {
             res.send(err? response(false, err) : response(true, "", {subjects: subjects}));
-        });
-    })
-    .all(authenticate)
-    .post((req, res) => {
-        if (!req.body) {
-            res.send(response(false, "No HTTP body found for POST request."));
-        } else if (!req.body.subject) {
-            res.send(response(false, "HTTP body malformed: empty or missing 'subject' field."));
-        }
-        const subject = Subject.create(req.body.subject);
-        subject.save(err => {
-            res.send(err? response(false, err) : response(true, "Subject POSTed successfully."));
         });
     });
 

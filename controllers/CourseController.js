@@ -18,14 +18,15 @@ router.route("/")
             .exec((err, courses) => {
                 res.send(err? response(false, err) : response(true, "", {courses: courses}));
             });
-    })
+    });
+
+router.route("/custom")
     .post((req, res) => {
         if (!req.body) {
             res.send(response(false, "No HTTP body found for POST request."));
         } else if (!req.body.course || req.body.course) {
             res.send(response(false, "HTTP body malformed: empty or missing 'course' field."));
         }
-
         Subject.findById(req.body.course.subject, (err, subject) => {
             if (err) {
                 res.send(response(false, err));
@@ -38,6 +39,12 @@ router.route("/")
                 logging.debug(`Invalid subject id ${req.body.course.subject}.`);
             }
         });
+    })
+    .put((req, res) => {
+
+    })
+    .delete((req, res) => {
+
     });
 
 router.route("/update")
