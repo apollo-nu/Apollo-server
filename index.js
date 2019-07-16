@@ -45,11 +45,13 @@ mongoose.connect(config.database, { useNewUrlParser: true });
 const CourseController = require("./controllers/CourseController");
 const DefaultController = require("./controllers/DefaultController");
 const SubjectController = require("./controllers/SubjectController");
+const TermController = require("./controllers/TermController");
 const UserController = require("./controllers/UserController");
 
 app.use("/courses", CourseController);
 app.use("", DefaultController);
 app.use("/subjects", SubjectController);
+app.use("/terms", TermController);
 app.use("/users", UserController);
 
 const PORT = process.env.PORT || 8081;
@@ -59,6 +61,5 @@ logger.info("Application listening on PORT: " + PORT);
 if (env === "production") {
     require("./scripts/setTimers")();
 }
-require("./scripts/populateDatabase/populateCourses")();
 
 module.exports = app;

@@ -3,7 +3,7 @@
 module.exports = {
     "development":{
         "host":"http://localhost:8081",
-        "database":`mongodb+srv://temp:${process.env.MONGO_PW}@apollo-oq2zz.mongodb.net/test?retryWrites=true&w=majority`
+        "database":`mongodb+srv://cooperfbarth:${process.env.MONGO_PW}@apollo-oq2zz.mongodb.net/test?retryWrites=true&w=majority`
     },
     "production":{
         "host":"https://apollo-nu.herokuapp.com",

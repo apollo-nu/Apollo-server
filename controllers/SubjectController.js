@@ -24,7 +24,7 @@ router.route("/")
         }
         const subject = Subject.create(req.body.subject);
         subject.save(err => {
-            res.send(err? response(false, err) : response(true, "Subjects POSTed successfully."));
+            res.send(err? response(false, err) : response(true, "Subject POSTed successfully."));
         });
     });
 
@@ -38,8 +38,13 @@ router.route("/update")
 
         let subjects = req.body.subjects;
         subjects = typeof(subjects) === "string"? [subjects] : subjects;
-        for (let bodySubject of subjects) {
-            Subject.findOneAndReplace(bodySubject, bodySubject, {upsert: true}, err => {
+        for (let subject of subjects) {
+            subject = Subject.create(subject);
+            delete subject._id;
+            Subject.findOneAndReplace({
+                symbol: subject.symbol,
+                custom: false
+            }, subject.toObject(), {upsert: true}, err => {
                 if (err) {
                     logger.error(err);
                 }
