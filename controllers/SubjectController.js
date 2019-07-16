@@ -22,16 +22,13 @@ router.route("/update")
         } else if (!req.body.subjects) {
             res.send(response(false, "HTTP body malformed: empty or missing 'subjects' field."));
         }
-
-        let subjects = req.body.subjects;
-        subjects = typeof(subjects) === "string"? [subjects] : subjects;
-        for (let subject of subjects) {
-            subject = Subject.create(subject);
+        for (let bodySubject of req.body.subjects) {
+            subject = Subject.create(bodySubject).toObject();
             delete subject._id;
             Subject.findOneAndReplace({
                 symbol: subject.symbol,
                 custom: false
-            }, subject.toObject(), {upsert: true}, err => {
+            }, subject, {upsert: true}, err => {
                 if (err) {
                     logger.error(err);
                 }
