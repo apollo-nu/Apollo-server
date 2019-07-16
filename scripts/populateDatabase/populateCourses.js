@@ -5,10 +5,24 @@ const config = require("../../config/db").development; //change this between pro
 const logger = require("../../src/logger");
 
 const COURSE_API_URL = "https://api.asg.northwestern.edu/courses/details/";
+const APOLLO_API_URL_LATEST_TERM = config.host + "/terms";
 const APOLLO_API_URL_SUBJECTS = config.host + "/subjects";
 const APOLLO_API_URL_COURSES = config.host + "/courses";
 
-const DEFAULT_TERMS = [4720, 4730, 4740, 4750]; //Fall 2018, Winter 2019, Spring 2019, Fall 2019
+function getLatestTerm() {
+    axios.get(APOLLO_API_URL_LATEST_TERM)
+        .then(response => {
+            response = response.data;
+            if (!response.ok) {
+                logger.error(response.message);
+            } else {
+                getSubjects(response.body.term);
+            }
+        })
+        .catch(err => {
+            logger.error(err);
+        });
+}
 
 function getSubjects(term) {
     axios.get(APOLLO_API_URL_SUBJECTS)
@@ -17,13 +31,7 @@ function getSubjects(term) {
             if (!response.ok) {
                 logger.error(response.message);
             } else {
-                if (term) {
-                    getCourses(response.body.subjects, term);
-                } else {
-                    for (let defaultTerm of DEFAULT_TERMS) {
-                        getCourses(response.body.subjects, defaultTerm);
-                    }
-                }
+                getCourses(response.body.subjects, term);
             }
         })
         .catch(err => {
@@ -68,4 +76,4 @@ function postCourses(courses) {
         });
 }
 
-module.exports = getSubjects;
+module.exports = getLatestTerm;

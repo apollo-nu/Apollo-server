@@ -28,6 +28,16 @@ router.route("/")
         });
     });
 
+router.route("/latest")
+    .get((_req, res) => {
+        Term.find()
+            .sort({start_date:-1})
+            .limit(1)
+            .exec((err, term) => {
+                res.send(err? response(false, err) : response(true, "", {term: term[0]}));
+            });
+    });
+
 router.route("/update")
     .post((req, res) => {
         if (!req.body) {
