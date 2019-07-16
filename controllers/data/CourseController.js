@@ -3,11 +3,11 @@
 const express = require("express");
 const router = express.Router();
 
-const response = require("../src/constructors/responseBody");
-const authenticate = require("../src/middleware/authenticate");
-const logging = require("../src/logger");
+const response = require("../../src/constructors/responseBody");
+const authenticate = require("../../src/middleware/authenticate");
+const logging = require("../../src/logger");
 
-const Course = require("../models/Course");
+const Course = require("../../models/data/Course");
 
 router.route("/")
     .all(authenticate)
@@ -77,9 +77,7 @@ router.route("/update")
                     id: course.id,
                     custom: false
                 },
-                course,
-                {upsert: true},
-                err => {
+                course, {upsert: true}, err => {
                     if (err) {
                         logging.error(err);
                     }

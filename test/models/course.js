@@ -5,11 +5,11 @@ const dirtyChai = require("dirty-chai");
 const expect = chai.expect;
 chai.use(dirtyChai);
 
-const Course = require("../../models/Course");
+const Course = require("../../models/data/Course");
 const mongoose = require("mongoose");
 
 const subjectId = mongoose.Types.ObjectId();
-// const termId = mongoose.Types.ObjectId();
+const termId = mongoose.Types.ObjectId();
 const validCourse = {
     id: "1234",
     title: "Course",
@@ -25,7 +25,7 @@ const validCourse = {
     meeting_days: "MTuWThF",
     start_time: "00:00",
     end_time: "23:59",
-    // term: termId,
+    term: termId,
     component: "Component"
 };
 
@@ -54,7 +54,7 @@ describe("Course Schema Tests", () => {
             expect(course.meeting_days).to.equal(validCourse.meeting_days);
             expect(course.start_time).to.equal(validCourse.start_time);
             expect(course.end_time).to.equal(validCourse.end_time);
-            // expect(course.term).to.equal(validCourse.term);
+            expect(course.term).to.equal(validCourse.term);
             expect(course.component).to.equal(validCourse.component);
             expect(course.custom).to.not.be.undefined();
             expect(course.custom).to.be.true();

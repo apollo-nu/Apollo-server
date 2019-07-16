@@ -3,10 +3,10 @@
 const express = require("express");
 const router = express.Router();
 
-const response = require("../src/constructors/responseBody");
-const logger = require("../src/logger");
+const response = require("../../src/constructors/responseBody");
+const logger = require("../../src/logger");
 
-const Subject = require("../models/Subject");
+const Subject = require("../../models/data/Subject");
 
 router.route("/")
     .get((_req, res) => {
@@ -23,7 +23,7 @@ router.route("/update")
             res.send(response(false, "HTTP body malformed: empty or missing 'subjects' field."));
         }
         for (let bodySubject of req.body.subjects) {
-            subject = Subject.create(bodySubject).toObject();
+            const subject = Subject.create(bodySubject).toObject();
             delete subject._id;
             Subject.findOneAndReplace({
                 symbol: subject.symbol,

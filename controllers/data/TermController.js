@@ -3,28 +3,15 @@
 const express = require("express");
 const router = express.Router();
 
-const response = require("../src/constructors/responseBody");
-const authenticate = require("../src/middleware/authenticate");
-const logger = require("../src/logger");
+const response = require("../../src/constructors/responseBody");
+const logger = require("../../src/logger");
 
-const Term = require("../models/Term");
+const Term = require("../../models/data/Term");
 
 router.route("/")
     .get((_req, res) => {
         Term.find((err, terms) => {
             res.send(err? response(false, err) : response(true, "", {terms: terms}));
-        });
-    })
-    .all(authenticate)
-    .post((req, res) => {
-        if (!req.body) {
-            res.send(response(false, "No HTTP body found for POST request."));
-        } else if (!req.body.term) {
-            res.send(response(false, "HTTP body malformed: empty or missing 'term' field."));
-        }
-        const term = Term.create(req.body.term);
-        term.save(err => {
-            res.send(err? response(false, err) : response(true, "Term POSTed successfully."));
         });
     });
 

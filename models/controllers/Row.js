@@ -2,12 +2,12 @@
 
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const logger = require("../src/logger");
+const logger = require("../../src/logger");
 
 const RowSchema = new Schema({
     quarter: String,
     year: String,
-    board: {type: Schema.Types.ObjectId, ref: "Board"}
+    cards: [{type: Schema.Types.ObjectId, ref: "Card"}]
 });
 
 RowSchema.statics.create = function(obj) {
