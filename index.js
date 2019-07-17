@@ -51,8 +51,8 @@ const helmet = require("helmet");
 app.use(helmet());
 
 const routes = require("./config/routes");
-Object.keys(routes).forEach(key => {
-    app.use(key, routes[key]);
+Object.entries(routes).forEach(([route, router]) => {
+    app.use(route, router);
 });
 
 const PORT = process.env.PORT || 8081;
