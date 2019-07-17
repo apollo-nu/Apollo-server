@@ -1,4 +1,2 @@
 # Apollo-server
-A tool for Northwestern students to plan their courses.
-
-Client: https://github.com/cooperbarth/Apollo-client
+API, Database Schema, and server-side scripts for [Apollo](https://github.com/cooperbarth/Apollo-client).
