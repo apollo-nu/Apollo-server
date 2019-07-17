@@ -5,6 +5,8 @@ const Schema = mongoose.Schema;
 const logger = require("../../src/logger");
 
 const CardSchema = new Schema({
+    user: {type: Schema.Types.ObjectId, ref: "User"},
+    row: {type: Schema.Types.ObjectId, ref: "Row"},
     course: {type: Schema.Types.ObjectId, ref: "Course"}
 });
 

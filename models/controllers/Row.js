@@ -5,9 +5,8 @@ const Schema = mongoose.Schema;
 const logger = require("../../src/logger");
 
 const RowSchema = new Schema({
-    quarter: String,
-    year: String,
-    cards: [{type: Schema.Types.ObjectId, ref: "Card"}]
+    term: {type: Schema.Types.ObjectId, ref: "Term"},
+    board: {type: Schema.Types.ObjectId, ref: "Board"}
 });
 
 RowSchema.statics.create = function(obj) {
