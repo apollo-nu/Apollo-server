@@ -50,23 +50,10 @@ app.use(cookieParser());
 const helmet = require("helmet");
 app.use(helmet());
 
-const BoardController = require("./controllers/components/BoardController");
-const CardController = require("./controllers/components/CardController");
-const CourseController = require("./controllers/data/CourseController");
-const DefaultController = require("./controllers/DefaultController");
-const RowController = require("./controllers/components/RowController");
-const SubjectController = require("./controllers/data/SubjectController");
-const TermController = require("./controllers/data/TermController");
-const UserController = require("./controllers/UserController");
-
-app.use("/boards", BoardController);
-app.use("/cards", CardController);
-app.use("/courses", CourseController);
-app.use("", DefaultController);
-app.use("/rows", RowController);
-app.use("/subjects", SubjectController);
-app.use("/terms", TermController);
-app.use("/users", UserController);
+const routes = require("./config/routes");
+Object.keys(routes).forEach(key => {
+    app.use(key, routes[key]);
+});
 
 const PORT = process.env.PORT || 8081;
 app.listen(PORT);
