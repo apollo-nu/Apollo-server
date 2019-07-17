@@ -1,11 +1,19 @@
 "use strict";
 
 const axios = require("axios");
-const config = require("../../config/db").development; //change this between prod/dev when needed
 const logger = require("../../src/logger");
 
 const COURSE_API_URL = "https://api.asg.northwestern.edu/terms";
-const APOLLO_API_URL = config.host + "/terms";
+let APOLLO_API_URL;
+
+function populateTerms(host) {
+    if (!host) {
+        logger.info("Host not specified; defaulting to development environment.");
+        host = require("../../config/db").development.host;
+    }
+    APOLLO_API_URL = host + "/terms";
+    getTerms();
+}
 
 function getTerms() {
     axios.get(COURSE_API_URL, {
@@ -41,4 +49,4 @@ function refreshTerms(terms) {
         });
 }
 
-module.exports = getTerms;
+module.exports = populateTerms;

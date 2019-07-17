@@ -59,7 +59,8 @@ app.listen(PORT);
 logger.info("Application listening on PORT: " + PORT);
 
 if (env === "production") {
-    require("./scripts/setTimers")();
+    const host = config.host;
+    require("./scripts/setTimers")(host);
 }
 
 module.exports = app;

@@ -1,13 +1,23 @@
 "use strict";
 
 const axios = require("axios");
-const config = require("../../config/db").development; //change this between prod/dev when needed
 const logger = require("../../src/logger");
 
 const COURSE_API_URL = "https://api.asg.northwestern.edu/courses/details/";
-const APOLLO_API_URL_LATEST_TERM = config.host + "/terms/latest";
-const APOLLO_API_URL_SUBJECTS = config.host + "/subjects";
-const APOLLO_API_URL_COURSES = config.host + "/courses";
+let APOLLO_API_URL_LATEST_TERM;
+let APOLLO_API_URL_SUBJECTS;
+let APOLLO_API_URL_COURSES;
+
+function populateCourses(host) {
+    if (!host) {
+        logger.info("Host not specified; defaulting to development environment.");
+        host = require("../../config/db").development.host;
+    }
+    APOLLO_API_URL_LATEST_TERM = host + "/terms/latest";
+    APOLLO_API_URL_SUBJECTS = host + "/subjects";
+    APOLLO_API_URL_COURSES = host + "/courses";
+    getLatestTerm();
+}
 
 function getLatestTerm() {
     axios.get(APOLLO_API_URL_LATEST_TERM)
@@ -77,4 +87,4 @@ function postCourses(courses) {
         });
 }
 
-module.exports = getLatestTerm;
+module.exports = populateCourses;
