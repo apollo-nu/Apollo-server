@@ -7,7 +7,7 @@ const env = process.env.NODE_ENV || "development";
 const host = require("../../config/db")[env].host;
 
 const COURSE_API_URL = "https://api.asg.northwestern.edu/subjects";
-const APOLLO_API_URL = host + "/subjects";;
+const APOLLO_API_URL = host + "/subjects";
 
 function populateSubjects() {
     getSubjects();

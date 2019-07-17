@@ -1,10 +1,26 @@
 "use strict";
 
-const express = require("express");
-const app = express();
-
 const dotenv = require("dotenv");
 dotenv.config();
+
+const logger = require("./src/logger");
+const env = "" + process.env.NODE_ENV;
+logger.info("ENV: " + env);
+
+const config = require("./config/db")[env || "development"];
+const mongoose = require("mongoose");
+mongoose.connect(config.database, { useNewUrlParser: true }, err => {
+    if (err) {
+        logger.error("Could not connect to database.");
+        logger.error(`${err.name}: ${err.errorLabels}`);
+        process.exit(1);
+    } else {
+        logger.info("Connected to database.");
+    }
+});
+
+const express = require("express");
+const app = express();
 
 // Parses request bodies
 const bodyParser = require("body-parser");
@@ -33,14 +49,6 @@ app.use(cookieParser());
 // Sets various security-related HTTP headers
 const helmet = require("helmet");
 app.use(helmet());
-
-const logger = require("./src/logger");
-const env = "" + process.env.NODE_ENV;
-logger.info("ENV: " + env);
-
-const config = require("./config/db")[env || "development"];
-const mongoose = require("mongoose");
-mongoose.connect(config.database, { useNewUrlParser: true });
 
 const CourseController = require("./controllers/data/CourseController");
 const DefaultController = require("./controllers/DefaultController");

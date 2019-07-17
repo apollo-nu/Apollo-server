@@ -35,7 +35,7 @@ function getTerms() {
 function refreshTerms(terms) {
     axios.post(APOLLO_API_URL + "/update", {
         headers: {
-            auth: scriptSecret
+            auth: process.env.SCRIPT_SECRET
         },
         terms: terms
     })
