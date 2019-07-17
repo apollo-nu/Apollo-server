@@ -58,3 +58,5 @@ router.route("/user/:userId")
             res.send(err? response(false, err) : response(true, "", {_id: cardRes._id}));
         });
     });
+
+module.exports = router;
