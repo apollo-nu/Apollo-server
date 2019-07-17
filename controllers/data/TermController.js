@@ -5,10 +5,12 @@ const router = express.Router();
 
 const response = require("../../src/constructors/responseBody");
 const logger = require("../../src/logger");
+const scriptValidate = require("../../src/middleware/scriptValidate");
 
 const Term = require("../../models/data/Term");
 
 router.route("/")
+    .all(scriptValidate)
     .get((_req, res) => {
         Term.find((err, terms) => {
             res.send(err? response(false, err) : response(true, "", {terms: terms}));
@@ -16,6 +18,7 @@ router.route("/")
     });
 
 router.route("/latest")
+    .all(scriptValidate)
     .get((_req, res) => {
         Term.find()
             .sort({start_date:-1})
@@ -26,6 +29,7 @@ router.route("/latest")
     });
 
 router.route("/update")
+    .all(scriptValidate)
     .post((req, res) => {
         if (!req.body) {
             res.send(response(false, "No HTTP body found for POST request."));
@@ -35,9 +39,9 @@ router.route("/update")
         let terms = req.body.terms;
         terms = typeof(terms) === "string"? [terms] : terms;
         for (let term of terms) {
-            term = Term.create(term);
+            term = Term.create(term).toObject();
             delete term._id;
-            Term.findOneAndReplace({id: term.id}, term.toObject(), {upsert: true}, err => {
+            Term.findOneAndReplace({id: term.id}, term, {upsert: true}, err => {
                 if (err) {
                     logger.error(err);
                 }

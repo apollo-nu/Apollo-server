@@ -6,6 +6,7 @@ const router = express.Router();
 const response = require("../../src/constructors/responseBody");
 const authenticate = require("../../src/middleware/authenticate");
 const logging = require("../../src/logger");
+const scriptValidate = require("../../src/middleware/scriptValidate");
 
 const Course = require("../../models/data/Course");
 
@@ -63,6 +64,7 @@ router.route("/custom")
     });
 
 router.route("/update")
+    .all(scriptValidate)
     .post((req, res) => {
         if (!req.body) {
             res.send(response(false, "No HTTP body found for POST request."));

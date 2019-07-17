@@ -4,15 +4,17 @@ const axios = require("axios");
 const logger = require("../../src/logger");
 
 const COURSE_API_URL = "https://api.asg.northwestern.edu/courses/details/";
-let APOLLO_API_URL_LATEST_TERM;
-let APOLLO_API_URL_SUBJECTS;
-let APOLLO_API_URL_COURSES;
+let APOLLO_API_URL_LATEST_TERM, APOLLO_API_URL_SUBJECTS, APOLLO_API_URL_COURSES, scriptSecret;
 
-function populateCourses(host) {
-    if (!host) {
+function populateCourses(host, secret) {
+    if (!secret) {
+        logger.warn("Secret not specified in call to setTimers, aborting.");
+        return;
+    } else if (!host) {
         logger.info("Host not specified; defaulting to development environment.");
         host = require("../../config/db").development.host;
     }
+    scriptSecret = secret;
     APOLLO_API_URL_LATEST_TERM = host + "/terms/latest";
     APOLLO_API_URL_SUBJECTS = host + "/subjects";
     APOLLO_API_URL_COURSES = host + "/courses";
@@ -20,7 +22,11 @@ function populateCourses(host) {
 }
 
 function getLatestTerm() {
-    axios.get(APOLLO_API_URL_LATEST_TERM)
+    axios.get(APOLLO_API_URL_LATEST_TERM, {
+        headers: {
+            auth: process.env.SCRIPT_SECRET
+        }
+    })
         .then(response => {
             response = response.data;
             if (!response.ok) {
@@ -35,7 +41,11 @@ function getLatestTerm() {
 }
 
 function getSubjects(term) {
-    axios.get(APOLLO_API_URL_SUBJECTS)
+    axios.get(APOLLO_API_URL_SUBJECTS, {
+        headers: {
+            auth: process.env.SCRIPT_SECRET
+        }
+    })
         .then(response => {
             response = response.data;
             if (!response.ok) {
@@ -77,6 +87,9 @@ function getCourses(subjects, term) {
 
 function postCourses(courses) {
     axios.post(APOLLO_API_URL_COURSES + "/update", {
+        headers: {
+            auth: process.env.SCRIPT_SECRET
+        },
         courses: courses
     })
         .then(response => {
