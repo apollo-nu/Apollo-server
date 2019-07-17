@@ -3,21 +3,15 @@
 const axios = require("axios");
 const logger = require("../../src/logger");
 
-const COURSE_API_URL = "https://api.asg.northwestern.edu/courses/details/";
-let APOLLO_API_URL_LATEST_TERM, APOLLO_API_URL_SUBJECTS, APOLLO_API_URL_COURSES, scriptSecret;
+const env = process.env.NODE_ENV || "development";
+const host = require("../../config/db")[env].host;
 
-function populateCourses(host, secret) {
-    if (!secret) {
-        logger.warn("Secret not specified in call to setTimers, aborting.");
-        return;
-    } else if (!host) {
-        logger.info("Host not specified; defaulting to development environment.");
-        host = require("../../config/db").development.host;
-    }
-    scriptSecret = secret;
-    APOLLO_API_URL_LATEST_TERM = host + "/terms/latest";
-    APOLLO_API_URL_SUBJECTS = host + "/subjects";
-    APOLLO_API_URL_COURSES = host + "/courses";
+const COURSE_API_URL = "https://api.asg.northwestern.edu/courses/details/";
+const APOLLO_API_URL_LATEST_TERM = host + "/terms/latest";
+const APOLLO_API_URL_SUBJECTS = host + "/subjects";
+const APOLLO_API_URL_COURSES = host + "/courses";
+
+function populateCourses() {
     getLatestTerm();
 }
 

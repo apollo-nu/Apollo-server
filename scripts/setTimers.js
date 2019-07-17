@@ -6,44 +6,38 @@ const SUBJECT_TIMER = Math.pow(2, 31) - 1; // max 32-bit int, ~24 days
 const COURSE_TIMER = 604800000; // 1 week
 
 const logger = require("./../src/logger");
+const env = process.env.NODE_ENV || "development";
+const host = require("./../config/db")[env].host;
 
-function ping(host) {
+function ping() {
     const axios = require("axios");
     setInterval(() => {
         axios.get(host + "/");
     }, PING_TIMER);
 }
 
-function populateTerms(host, secret) {
+function populateTerms() {
     setInterval(() => {
-        require("./populateDatabase/populateTerms")(host, secret);
+        require("./populateDatabase/populateTerms")();
     }, TERM_TIMER);
 }
 
-function populateSubjects(host, secret) {
+function populateSubjects() {
     setInterval(() => {
-        require("./populateDatabase/populateSubjects")(host, secret);
+        require("./populateDatabase/populateSubjects")();
     }, SUBJECT_TIMER);
 }
 
-function populateCourses(host, secret) {
+function populateCourses() {
     setInterval(() => {
-        require("./populateDatabase/populateCourses")(host, secret);
+        require("./populateDatabase/populateCourses")();
     }, COURSE_TIMER);
 }
 
-module.exports = (host, secret) => {
-    if (!secret) {
-        logger.warn("Secret not specified in call to setTimers, aborting.");
-        return;
-    } else if (!host) {
-        logger.info("Host not specified; defaulting to development environment.");
-        host = require("../../config/db").development.host;
-    }
-
+module.exports = () => {
     logger.info("Running database population scripts.");
-    ping(host);
-    populateTerms(host, secret);
-    populateSubjects(host, secret);
-    populateCourses(host, secret);
+    ping();
+    populateTerms();
+    populateSubjects();
+    populateCourses();
 };
