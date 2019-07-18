@@ -2,15 +2,14 @@
 
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const logger = require("../../src/logger");
 
 const BoardSchema = new Schema({
-    
+    user: {type: Schema.Types.ObjectId, ref: "User"}
 });
 
 BoardSchema.statics.create = function(obj) {
     let board = new mongoose.model("Board", BoardSchema)();
-    logger.debug(obj);
+    board.user = obj.user;
     return board;
 };
 

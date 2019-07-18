@@ -37,7 +37,7 @@ router.route("/user/:userId")
     .all(authenticate)
     .get((req, res) => {
         const userId = req.params.userId;
-        Card.find({userId: userId})
+        Card.find({user: userId})
             // .populate("user")
             // .populate("row")
             // .populate("board")

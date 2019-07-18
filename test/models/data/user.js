@@ -5,7 +5,7 @@ const dirtyChai = require("dirty-chai");
 const expect = chai.expect;
 chai.use(dirtyChai);
 
-const User = require("../../models/User");
+const User = require("../../../models/User");
 
 const EMAIL = "email123@gmail.com";
 const PASSWORD = "password";
