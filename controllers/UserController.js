@@ -63,11 +63,6 @@ router.route("/:id")
         User.findOne({_id: req.params.id}, (err, user) => {
             res.send(err? response(false, err) : response(true, "", {user: user}));
         });
-    })
-    .put((req, res) => {
-        User.findOneAndUpdate({_id: req.params.id}, req.body.user, err => {
-            res.send(err? (response(false, err)) : response(true, "User updated successfully."));
-        });
     });
 
 module.exports = router;

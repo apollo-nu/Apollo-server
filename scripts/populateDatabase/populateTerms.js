@@ -6,25 +6,25 @@ const logger = require("../../src/logger");
 const env = process.env.NODE_ENV || "development";
 const host = require("../../config/db")[env].host;
 
-const COURSE_API_URL = "https://api.asg.northwestern.edu/subjects";
-const APOLLO_API_URL = host + "/subjects";
+const COURSE_API_URL = "https://api.asg.northwestern.edu/terms";
+const APOLLO_API_URL = host + "/terms";
 
-function populateSubjects() {
-    getSubjects();
+function populateTerms() {
+    getTerms();
 }
 
-function getSubjects() {
+function getTerms() {
     axios.get(COURSE_API_URL, {
         params: {
             "key": process.env.API_KEY
         }
     })
         .then(response => {
-            const subjects = response.data;
-            if (subjects.error) {
-                logger.error(subjects.error);
+            const terms = response.data;
+            if (terms.error) {
+                logger.error(terms.error);
             } else {
-                refreshSubjects(subjects);
+                refreshTerms(terms);
             }
         })
         .catch(err => {
@@ -32,12 +32,12 @@ function getSubjects() {
         });
 }
 
-function refreshSubjects(subjects) {
+function refreshTerms(terms) {
     axios.post(APOLLO_API_URL + "/update", {
         headers: {
             auth: process.env.SCRIPT_SECRET
         },
-        subjects: subjects
+        terms: terms
     })
         .then(response => {
             response = response.data;
@@ -50,4 +50,4 @@ function refreshSubjects(subjects) {
         });
 }
 
-module.exports = populateSubjects;
+module.exports = populateTerms;

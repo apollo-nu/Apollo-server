@@ -1,29 +1,51 @@
 "use strict";
 
 const axios = require("axios");
-const config = require("../../config/db").development; //change this between prod/dev when needed
 const logger = require("../../src/logger");
 
-const COURSE_API_URL = "https://api.asg.northwestern.edu/courses/";
-const APOLLO_API_URL_SUBJECTS = config.host + "/subjects";
-const APOLLO_API_URL_COURSES = config.host + "/courses";
+const env = process.env.NODE_ENV || "development";
+const host = require("../../config/db")[env].host;
 
-const DEFAULT_TERMS = [4720, 4730, 4740, 4750]; //Fall 2018, Winter 2019, Spring 2019, Fall 2019
+const COURSE_API_URL = "https://api.asg.northwestern.edu/courses/details/";
+const APOLLO_API_URL_LATEST_TERM = host + "/terms/latest";
+const APOLLO_API_URL_SUBJECTS = host + "/subjects";
+const APOLLO_API_URL_COURSES = host + "/courses";
 
-function getSubjects(term) {
-    axios.get(APOLLO_API_URL_SUBJECTS)
+function populateCourses() {
+    getLatestTerm();
+}
+
+function getLatestTerm() {
+    axios.get(APOLLO_API_URL_LATEST_TERM, {
+        headers: {
+            auth: process.env.SCRIPT_SECRET
+        }
+    })
         .then(response => {
             response = response.data;
             if (!response.ok) {
                 logger.error(response.message);
             } else {
-                if (term) {
-                    getCourses(response.body.subjects, term);
-                } else {
-                    for (let defaultTerm of DEFAULT_TERMS) {
-                        getCourses(response.body.subjects, defaultTerm);
-                    }
-                }
+                getSubjects(response.body.term);
+            }
+        })
+        .catch(err => {
+            logger.error(err);
+        });
+}
+
+function getSubjects(term) {
+    axios.get(APOLLO_API_URL_SUBJECTS, {
+        headers: {
+            auth: process.env.SCRIPT_SECRET
+        }
+    })
+        .then(response => {
+            response = response.data;
+            if (!response.ok) {
+                logger.error(response.message);
+            } else {
+                getCourses(response.body.subjects, term);
             }
         })
         .catch(err => {
@@ -36,7 +58,7 @@ function getCourses(subjects, term) {
         axios.get(COURSE_API_URL, {
             params: {
                 "key": process.env.API_KEY,
-                "term": term,
+                "term": term.id,
                 "subject": subject.symbol
             }
         })
@@ -45,10 +67,11 @@ function getCourses(subjects, term) {
                 if (data.error) {
                     logger.error(data.error);
                 }
-                for (let course of data) {
+                postCourses(data.map(course => {
                     course.subject = subject._id;
-                }
-                postCourses(data);
+                    course.term = term._id;
+                    return course;
+                }));
             })
             .catch(() => {
                 logger.warn(`Could not retrieve data for subject ${subject.symbol}.`);
@@ -58,6 +81,9 @@ function getCourses(subjects, term) {
 
 function postCourses(courses) {
     axios.post(APOLLO_API_URL_COURSES + "/update", {
+        headers: {
+            auth: process.env.SCRIPT_SECRET
+        },
         courses: courses
     })
         .then(response => {
@@ -68,4 +94,4 @@ function postCourses(courses) {
         });
 }
 
-module.exports = getSubjects;
+module.exports = populateCourses;

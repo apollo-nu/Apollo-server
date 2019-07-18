@@ -1,18 +1,25 @@
 "use strict";
 
-const env = "" + process.env.NODE_ENV;
-const config = require("../../config/db")[env || "development"];
-const logger = require("../../src/logger");
-
 const PING_TIMER = 1750000; // ~29 mins
+const TERM_TIMER = 604800000; // 1 week
 const SUBJECT_TIMER = Math.pow(2, 31) - 1; // max 32-bit int, ~24 days
 const COURSE_TIMER = 604800000; // 1 week
+
+const logger = require("./../src/logger");
+const env = process.env.NODE_ENV || "development";
+const host = require("./../config/db")[env].host;
 
 function ping() {
     const axios = require("axios");
     setInterval(() => {
-        axios.get(config.host + "/");
+        axios.get(host + "/");
     }, PING_TIMER);
+}
+
+function populateTerms() {
+    setInterval(() => {
+        require("./populateDatabase/populateTerms")();
+    }, TERM_TIMER);
 }
 
 function populateSubjects() {
@@ -30,6 +37,7 @@ function populateCourses() {
 module.exports = () => {
     logger.info("Running database population scripts.");
     ping();
+    populateTerms();
     populateSubjects();
     populateCourses();
 };

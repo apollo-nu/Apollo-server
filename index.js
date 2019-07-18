@@ -1,10 +1,26 @@
 "use strict";
 
-const express = require("express");
-const app = express();
-
 const dotenv = require("dotenv");
 dotenv.config();
+
+const logger = require("./src/logger");
+const env = "" + process.env.NODE_ENV;
+logger.info("ENV: " + env);
+
+const config = require("./config/db")[env || "development"];
+const mongoose = require("mongoose");
+mongoose.connect(config.database, { useNewUrlParser: true }, err => {
+    if (err) {
+        logger.error("Could not connect to database.");
+        logger.error(`${err.name}: ${err.errorLabels}`);
+        process.exit(1);
+    } else {
+        logger.info("Connected to database.");
+    }
+});
+
+const express = require("express");
+const app = express();
 
 // Parses request bodies
 const bodyParser = require("body-parser");
@@ -34,23 +50,10 @@ app.use(cookieParser());
 const helmet = require("helmet");
 app.use(helmet());
 
-const logger = require("./src/logger");
-const env = "" + process.env.NODE_ENV;
-logger.info("ENV: " + env);
-
-const config = require("./config/db")[env || "development"];
-const mongoose = require("mongoose");
-mongoose.connect(config.database, { useNewUrlParser: true });
-
-const CourseController = require("./controllers/CourseController");
-const DefaultController = require("./controllers/DefaultController");
-const SubjectController = require("./controllers/SubjectController");
-const UserController = require("./controllers/UserController");
-
-app.use("/courses", CourseController);
-app.use("", DefaultController);
-app.use("/subjects", SubjectController);
-app.use("/users", UserController);
+const routes = require("./config/routes");
+Object.entries(routes).forEach(([route, router]) => {
+    app.use(route, router);
+});
 
 const PORT = process.env.PORT || 8081;
 app.listen(PORT);

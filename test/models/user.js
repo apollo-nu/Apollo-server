@@ -25,7 +25,6 @@ describe("User Schema Tests", () => {
     context("calls User constructor", () => {
         it("should initialize a User object with empty fields", () => {
             const emptyUser = new User();
-            console.log(emptyUser);
             Object.keys(emptyUser.toObject()).forEach(key => {
                 if (key !== "_id") {
                     expect(emptyUser[key]).to.be.undefined();

@@ -2,19 +2,19 @@
 
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 
 const UserSchema = new Schema({
     email: String,
-    password: String,
+    password: String
 });
 
 function generateHash(password) {
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+    return bcryptjs.hashSync(password, bcryptjs.genSaltSync(8), null);
 }
 
 UserSchema.methods.validateUser = function(password) {
-    return bcrypt.compareSync(password, this.password);
+    return bcryptjs.compareSync(password, this.password);
 };
 
 UserSchema.statics.create = function(obj) {
