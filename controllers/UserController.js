@@ -14,20 +14,20 @@ router.route("/createAccount")
     .post((req, res) => {
         validate(req.body, "creds", validResponse => {
             if (validResponse.ok) {
-                User.findOne({email: validResponse.body.email}, (err, user) => {
+                User.findOne({email: validResponse.body.data.email}, (err, user) => {
                     if (err) {
                         res.send(response(false, err, {_id: null}));
                     } else if (user) {
                         res.send(response(false, "User already exists."));
                     } else {
-                        const newUser = User.create(validResponse.body);
+                        const newUser = User.create(validResponse.body.data);
                         newUser.save((err, user) => {
-                            res.send(err? response(false, err, {_id: null}) : response(true, "", {_id: user._id}));
+                            res.send(err? response(false, err) : response(true, "", {_id: user._id}));
                         });
                     }
                 });
             } else {
-                res.send(response(false, response.message));
+                res.send(response(false, validResponse.message));
             }
         });
     });
