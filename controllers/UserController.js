@@ -10,6 +10,13 @@ const validate = require("../src/indicative/indicative");
 
 const User = require("../models/User");
 
+router.route("/")
+    .all(authenticate)
+    .get((req, res) => {
+        const accessToken = req.cookies["access-token"];
+        res.send(jwt.payload(accessToken));
+    });
+
 router.route("/createAccount")
     .post((req, res) => {
         validate(req.body, "creds", validResponse => {
@@ -45,7 +52,7 @@ router.route("/login")
                         res.send(response(false, `No user with email ${body.email} found.`));
                     } else {
                         if (user.validateUser(body.password)) {
-                            const token = jwt({
+                            const token = jwt.sign({
                                 id: user._id,
                                 issued: Date.now()
                             }, 10080);
@@ -60,14 +67,6 @@ router.route("/login")
             } else {
                 res.send(response(false, validResponse.message[0].message));
             }
-        });
-    });
-
-router.route("/:id")
-    .all(authenticate)
-    .get((req, res) => {
-        User.findOne({_id: req.params.id}, (err, user) => {
-            res.send(err? response(false, err) : response(true, "", {user: user}));
         });
     });
 
