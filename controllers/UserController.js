@@ -14,7 +14,7 @@ router.route("/")
     .all(authenticate)
     .get((req, res) => {
         const accessToken = req.cookies["access-token"];
-        res.send(jwt.payload(accessToken));
+        res.send(response(true, "", {id: jwt.payload(accessToken)}));
     });
 
 router.route("/createAccount")
