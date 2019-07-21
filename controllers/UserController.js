@@ -60,7 +60,7 @@ router.route("/login")
             } else {
                 res.send(response(false, validResponse.message[0].message));
             }
-        })
+        });
     });
 
 router.route("/:id")
