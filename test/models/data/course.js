@@ -5,7 +5,7 @@ const dirtyChai = require("dirty-chai");
 const expect = chai.expect;
 chai.use(dirtyChai);
 
-const Course = require("../../models/data/Course");
+const Course = require("../../../models/data/Course");
 const mongoose = require("mongoose");
 
 const subjectId = mongoose.Types.ObjectId();

@@ -5,7 +5,7 @@ const dirtyChai = require("dirty-chai");
 const expect = chai.expect;
 chai.use(dirtyChai);
 
-const Subject = require("../../models/data/Subject");
+const Subject = require("../../../models/data/Subject");
 
 const validSubject = {
     symbol: "AAA",

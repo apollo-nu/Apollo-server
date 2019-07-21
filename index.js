@@ -33,6 +33,10 @@ app.use(bodyParser.json(bpConfig));
 // const https = require("./src/middleware/https");
 // app.use(https);
 
+// Parses cookies
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
 // Adds CORS headers to requests
 const cors = require("./src/middleware/cors");
 app.use(cors);
@@ -41,10 +45,6 @@ app.use(cors);
 const morgan = require("./src/middleware/morgan");
 app.use(morgan.loggingErr);
 app.use(morgan.loggingOut);
-
-// Parses cookies
-const cookieParser = require("cookie-parser");
-app.use(cookieParser());
 
 // Sets various security-related HTTP headers
 const helmet = require("helmet");
