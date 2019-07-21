@@ -10,6 +10,6 @@ module.exports = {
             return jwt.sign(payload, process.env.JWT_SECRET, options);
           },
     payload: token => {
-        return jwt.decode(token).payload;
+        return jwt.decode(token);
     }
 };
