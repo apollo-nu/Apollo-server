@@ -18,6 +18,7 @@ const validCourse = {
         name: "Instructor"
     },
     subject: subjectId,
+    catalog_num: "214-0",
     room: {
         building_name: "Building",
         name: "Room"
@@ -50,6 +51,7 @@ describe("Course Schema Tests", () => {
             expect(course.school).to.equal(validCourse.school);
             expect(course.instructor).to.equal(validCourse.instructor.name);
             expect(course.subject).to.equal(validCourse.subject);
+            expect(course.catalog_num).to.equal(validCourse.catalog_num);
             expect(course.room).to.equal(`${validCourse.room.building_name} ${validCourse.room.name}`);
             expect(course.meeting_days).to.equal(validCourse.meeting_days);
             expect(course.start_time).to.equal(validCourse.start_time);
@@ -68,11 +70,12 @@ describe("Course Schema Tests", () => {
             expect(course.school).to.equal(validCourse.school);
             expect(course.instructor).to.equal(validCourse.instructor.name);
             expect(course.subject).to.equal(validCourse.subject);
+            expect(course.catalog_num).to.equal(validCourse.catalog_num);
             expect(course.room).to.equal(`${validCourse.room.building_name} ${validCourse.room.name}`);
             expect(course.meeting_days).to.equal(validCourse.meeting_days);
             expect(course.start_time).to.equal(validCourse.start_time);
             expect(course.end_time).to.equal(validCourse.end_time);
-            // expect(course.term).to.equal(validCourse.term);
+            expect(course.term).to.equal(validCourse.term);
             expect(course.component).to.equal(validCourse.component);
             expect(course.custom).to.not.be.undefined();
             expect(course.custom).to.be.false();

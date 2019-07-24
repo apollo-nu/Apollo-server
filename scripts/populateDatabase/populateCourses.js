@@ -5,11 +5,12 @@ const logger = require("../../src/logger");
 
 const env = process.env.NODE_ENV || "development";
 const host = require("../../config/db")[env].host;
+const scriptSecret = process.env.SCRIPT_SECRET;
 
 const COURSE_API_URL = "https://api.asg.northwestern.edu/courses/details/";
 const APOLLO_API_URL_LATEST_TERM = host + "/terms/latest";
 const APOLLO_API_URL_SUBJECTS = host + "/subjects";
-const APOLLO_API_URL_COURSES = host + "/courses";
+const APOLLO_API_URL_COURSES = host + "/courses/update";
 
 function populateCourses() {
     getLatestTerm();
@@ -18,7 +19,7 @@ function populateCourses() {
 function getLatestTerm() {
     axios.get(APOLLO_API_URL_LATEST_TERM, {
         headers: {
-            auth: process.env.SCRIPT_SECRET
+            auth: scriptSecret
         }
     })
         .then(response => {
@@ -37,7 +38,7 @@ function getLatestTerm() {
 function getSubjects(term) {
     axios.get(APOLLO_API_URL_SUBJECTS, {
         headers: {
-            auth: process.env.SCRIPT_SECRET
+            auth: scriptSecret
         }
     })
         .then(response => {
@@ -80,11 +81,10 @@ function getCourses(subjects, term) {
 }
 
 function postCourses(courses) {
-    axios.post(APOLLO_API_URL_COURSES + "/update", {
+    axios.post(APOLLO_API_URL_COURSES, {courses: courses}, {
         headers: {
-            auth: process.env.SCRIPT_SECRET
-        },
-        courses: courses
+            auth: scriptSecret
+        }
     })
         .then(response => {
             response = response.data;
