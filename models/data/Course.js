@@ -9,6 +9,7 @@ const CourseSchema = new Schema({
     school: String,
     instructor: String,
     subject: {type: Schema.Types.ObjectId, ref: "Subject"},
+    catalog_num: String,
     room: String,
     meeting_days: String,
     start_time: String,
@@ -16,7 +17,6 @@ const CourseSchema = new Schema({
     term: {type: Schema.Types.ObjectId, ref: "Term"},
     component: String,
     custom: Boolean,
-    // user: {type: Schema.Types.ObjectId, ref: "User"}
 });
 
 CourseSchema.statics.create = function(obj, custom, userId) {
@@ -26,6 +26,7 @@ CourseSchema.statics.create = function(obj, custom, userId) {
     course.school = obj.school;
     course.instructor = obj.instructor? obj.instructor.name : null;
     course.subject = obj.subject;
+    course.catalog_num = obj.catalog_num;
     course.room = obj.room? `${obj.room.building_name} ${obj.room.name}` : null;
     course.meeting_days = obj.meeting_days;
     course.start_time = obj.start_time;
