@@ -34,7 +34,7 @@ router.route("/user/:userId")
     .get((req, res) => {
         const userId = req.params.userId;
         Board.find({user: userId})
-            // .populate("user")
+            .populate("user")
             .exec((err, boards) => {
                 res.send(err? response(false, err) : response(true, "", {boards: boards}));
             });

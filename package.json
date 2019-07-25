@@ -4,8 +4,8 @@
   "description": "An app for Northwestern students to plan their courses.",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=production node index.js",
-    "dev": "NODE_ENV=development node index.js",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development node index.js",
     "test": "jshint ./ && mocha --recursive"
   },
   "repository": {
@@ -24,6 +24,7 @@
     "body-parser": "^1.19.0",
     "chai": "^4.2.0",
     "cookie-parser": "^1.4.4",
+    "cross-env": "^5.2.0",
     "deep-equal": "^1.0.1",
     "dirty-chai": "^2.0.1",
     "dotenv": "^8.0.0",
