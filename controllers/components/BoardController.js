@@ -33,15 +33,13 @@ router.route("/user/:userId")
     .all(authenticate)
     .get((req, res) => {
         const userId = req.params.userId;
-        Board.find({user: userId})
-            .populate("user")
-            .exec((err, boards) => {
-                res.send(err? response(false, err) : response(true, "", {boards: boards}));
-            });
+        Board.find({user: userId}, (err, boards) => {
+            res.send(err? response(false, err) : response(true, "", {boards: boards}));
+        });
     })
     .post((req, res) => {
         const board = Board.create({
-            userId: req.params.userId
+            user: req.params.userId
         });
         board.save((err, boardRes) => {
             res.send(err? response(false, err) : response(true, "", {_id: boardRes._id}));
