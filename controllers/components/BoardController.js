@@ -33,8 +33,8 @@ router.route("/user/:userId")
     .all(authenticate)
     .get((req, res) => {
         const userId = req.params.userId;
-        Board.find({user: userId}, (err, boards) => {
-            res.send(err? response(false, err) : response(true, "", {boards: boards}));
+        Board.findOne({user: userId}, (err, board) => {
+            res.send(err? response(false, err) : response(true, "", {board: board}));
         });
     })
     .post((req, res) => {
