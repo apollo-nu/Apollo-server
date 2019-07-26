@@ -29,26 +29,21 @@ router.route("/:id")
         });
     });
 
-router.route("/user/:userId")
+router.route("/board/:boardId")
     .all(authenticate)
     .get((req, res) => {
-        const userId = req.params.userId;
-        Row.find({user: userId})
-            // .populate("user")
-            // .populate("term")
-            // .populate("board")
-            .exec((err, rows) => {
-                res.send(err? response(false, err) : response(true, "", {rows: rows}));
-            });
+        const boardId = req.params.boardId;
+        Row.find({board: boardId}, (err, rows) => {
+            res.send(err? response(false, err) : response(true, "", {rows: rows}));
+        });
     })
     .post((req, res) => {
-        if (!(req.body && req.body.term && req.body.board)) {
-            res.send(response(false, "HTTP body missing or malformed in POST request to /user/:userId"));
+        if (!(req.body && req.body.term)) {
+            res.send(response(false, "HTTP body missing or malformed in POST request to /board/:boardId"));
         }
         const row = Row.create({
-            userId: req.params.userId,
             row: req.body.term,
-            course: req.body.board
+            board: req.params.boardId
         });
         row.save((err, rowRes) => {
             res.send(err? response(false, err) : response(true, "", {_id: rowRes._id}));

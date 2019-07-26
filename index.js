@@ -9,7 +9,11 @@ logger.info("ENV: " + env);
 
 const config = require("./config/db")[env || "development"];
 const mongoose = require("mongoose");
-mongoose.connect(config.database, { useNewUrlParser: true }, err => {
+mongoose.connect(config.database, {
+    useNewUrlParser: true,
+    useFindAndModify: false,
+    useCreateIndex: true
+}, err => {
     if (err) {
         logger.error("Could not connect to database.");
         logger.error(`${err.name}: ${err.errorLabels}`);

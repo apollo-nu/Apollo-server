@@ -10,22 +10,6 @@ const Card = require("../../models/components/Card");
 
 router.route("/:id")
     .all(authenticate)
-    .get((req, res) => {
-        const id = req.params.id;
-        Card.findById(id)
-            // .populate("user")
-            // .populate("row")
-            // .populate("board")
-            .exec((err, card) => {
-                res.send(err? response(false, err) : response(true, "", {card: card}));
-            });
-    })
-    .patch((req, res) => {
-        const id = req.params.id;
-        Card.findByIdAndUpdate(id, req.body.card, (err, card) => {
-            res.send(err? response(false, err) : response(true, "", {card: card}));
-        });
-    })
     .delete((req, res) => {
         const id = req.params.id;
         Card.findOneAndDelete({_id: id}, err => {
@@ -33,29 +17,38 @@ router.route("/:id")
         });
     });
 
-router.route("/user/:userId")
+router.route("/row/:rowId")
     .all(authenticate)
     .get((req, res) => {
-        const userId = req.params.userId;
-        Card.find({user: userId})
-            // .populate("user")
-            // .populate("row")
-            // .populate("board")
+        const rowId = req.params.rowId;
+        Card.find({row: rowId})
+            .populate({
+                path: 'course',
+                populate: {
+                    path: 'subject'
+                }
+            })
             .exec((err, cards) => {
                 res.send(err? response(false, err) : response(true, "", {cards: cards}));
             });
-    })
+        })
     .post((req, res) => {
-        if (!(req.body && req.body.row && req.body.course)) {
+        if (!(req.body && req.body.course)) {
             res.send(response(false, "HTTP body missing or malformed in POST request to /user/:userId"));
         }
         const card = Card.create({
-            userId: req.params.userId,
-            row: req.body.row,
+            row: req.params.rowId,
             course: req.body.course
         });
         card.save((err, cardRes) => {
             res.send(err? response(false, err) : response(true, "", {_id: cardRes._id}));
+        });
+    })
+    .patch((req, res) => {
+        Card.findOneAndUpdate({_id: req.body.cardId}, {
+            row: req.params.rowId
+        }, err => {
+            res.send(err? response(false, err) : response(true));
         });
     });
 
