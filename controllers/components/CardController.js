@@ -7,6 +7,7 @@ const response = require("../../src/constructors/responseBody");
 const authenticate = require("../../src/middleware/authenticate");
 
 const Card = require("../../models/components/Card");
+const Subject = require("../../models/data/Subject");
 
 router.route("/:id")
     .all(authenticate)
@@ -22,7 +23,12 @@ router.route("/row/:rowId")
     .get((req, res) => {
         const rowId = req.params.rowId;
         Card.find({row: rowId})
-            .populate("course")
+            .populate({
+                path: 'course',
+                populate: {
+                    path: 'subject'
+                }
+            })
             .exec((err, cards) => {
                 res.send(err? response(false, err) : response(true, "", {cards: cards}));
             });
@@ -32,7 +38,7 @@ router.route("/row/:rowId")
             res.send(response(false, "HTTP body missing or malformed in POST request to /user/:userId"));
         }
         const card = Card.create({
-            row: req.params.row,
+            row: req.params.rowId,
             course: req.body.course
         });
         card.save((err, cardRes) => {
@@ -41,8 +47,8 @@ router.route("/row/:rowId")
     })
     .patch((req, res) => {
         Card.findOneAndUpdate({_id: req.body.cardId}, {
-            row: req.params.row
-        }, (err, cardRes) => {
+            row: req.params.rowId
+        }, err => {
             res.send(err? response(false, err) : response(true));
         });
     });
