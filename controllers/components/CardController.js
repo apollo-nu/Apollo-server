@@ -7,7 +7,6 @@ const response = require("../../src/constructors/responseBody");
 const authenticate = require("../../src/middleware/authenticate");
 
 const Card = require("../../models/components/Card");
-const Subject = require("../../models/data/Subject");
 
 router.route("/:id")
     .all(authenticate)
