@@ -5,12 +5,13 @@ const router = express.Router();
 
 const response = require("../../src/constructors/responseBody");
 const logger = require("../../src/logger");
+const authenticate = require("../../src/middleware/authenticate");
 const scriptValidate = require("../../src/middleware/scriptValidate");
 
 const Term = require("../../models/data/Term");
 
 router.route("/")
-    .all(scriptValidate)
+    .all(authenticate)
     .get((_req, res) => {
         Term.find((err, terms) => {
             res.send(err? response(false, err) : response(true, "", {terms: terms}));
