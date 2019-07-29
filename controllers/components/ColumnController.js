@@ -33,9 +33,11 @@ router.route("/board/:boardId")
     .all(authenticate)
     .get((req, res) => {
         const boardId = req.params.boardId;
-        Column.find({board: boardId}, (err, columns) => {
-            res.send(err? response(false, err) : response(true, "", {columns: columns}));
-        });
+        Column.find({board: boardId})
+            .populate("term")
+            .exec((err, columns) => {
+                res.send(err? response(false, err) : response(true, "", {columns: columns}));
+            })
     })
     .post((req, res) => {
         if (!(req.body && req.body.term)) {
