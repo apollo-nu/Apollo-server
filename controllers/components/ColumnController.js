@@ -44,7 +44,7 @@ router.route("/board/:boardId")
             res.send(response(false, "HTTP body missing or malformed in POST request to /board/:boardId"));
         }
         const column = Column.create({
-            column: req.body.term,
+            term: req.body.term,
             board: req.params.boardId
         });
         column.save((err, columnRes) => {

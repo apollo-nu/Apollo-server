@@ -41,7 +41,7 @@ router.route("/column/:columnId")
             course: req.body.course
         });
         card.save((err, cardRes) => {
-            res.send(err? response(false, err) : response(true, "", {_id: cardRes._id}));
+            res.send(err? response(false, err) : response(true, "", {card: cardRes}));
         });
     })
     .patch((req, res) => {
