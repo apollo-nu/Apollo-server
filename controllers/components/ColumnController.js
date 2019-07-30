@@ -37,7 +37,7 @@ router.route("/board/:boardId")
             .populate("term")
             .exec((err, columns) => {
                 res.send(err? response(false, err) : response(true, "", {columns: columns}));
-            })
+            });
     })
     .post((req, res) => {
         if (!(req.body && req.body.term)) {
@@ -47,8 +47,14 @@ router.route("/board/:boardId")
             term: req.body.term,
             board: req.params.boardId
         });
-        column.save((err, columnRes) => {
-            res.send(err? response(false, err) : response(true, "", {_id: columnRes._id}));
+        Column.populate(column, {path: "term"}, (err, column) => {
+            if (err) {
+                res.send(response(false, err));
+            } else {
+                column.save((err, columnRes) => {
+                    res.send(err? response(false, err) : response(true, "", {column: columnRes}));
+                });
+            }
         });
     });
 
