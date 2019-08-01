@@ -40,21 +40,15 @@ router.route("/board/:boardId")
             });
     })
     .post((req, res) => {
-        if (!(req.body && req.body.term)) {
+        if (!(req.body && req.body.name)) {
             res.send(response(false, "HTTP body missing or malformed in POST request to /board/:boardId"));
         }
         const column = Column.create({
-            term: req.body.term,
+            name: req.body.name,
             board: req.params.boardId
         });
-        Column.populate(column, {path: "term"}, (err, column) => {
-            if (err) {
-                res.send(response(false, err));
-            } else {
-                column.save((err, columnRes) => {
-                    res.send(err? response(false, err) : response(true, "", {column: columnRes}));
-                });
-            }
+        column.save((err, columnRes) => {
+            res.send(err? response(false, err) : response(true, "", {column: columnRes}));
         });
     });
 
