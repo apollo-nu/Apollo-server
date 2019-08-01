@@ -42,7 +42,7 @@ router.route("/user/:userId")
             user: req.params.userId
         });
         board.save((err, boardRes) => {
-            res.send(err? response(false, err) : response(true, "", {_id: boardRes._id}));
+            res.send(err? response(false, err) : response(true, "", {board: boardRes}));
         });
     });
 

@@ -17,11 +17,11 @@ router.route("/:id")
         });
     });
 
-router.route("/row/:rowId")
+router.route("/column/:columnId")
     .all(authenticate)
     .get((req, res) => {
-        const rowId = req.params.rowId;
-        Card.find({row: rowId})
+        const columnId = req.params.columnId;
+        Card.find({column: columnId})
             .populate({
                 path: 'course',
                 populate: {
@@ -37,16 +37,16 @@ router.route("/row/:rowId")
             res.send(response(false, "HTTP body missing or malformed in POST request to /user/:userId"));
         }
         const card = Card.create({
-            row: req.params.rowId,
+            column: req.params.columnId,
             course: req.body.course
         });
         card.save((err, cardRes) => {
-            res.send(err? response(false, err) : response(true, "", {_id: cardRes._id}));
+            res.send(err? response(false, err) : response(true, "", {card: cardRes}));
         });
     })
     .patch((req, res) => {
         Card.findOneAndUpdate({_id: req.body.cardId}, {
-            row: req.params.rowId
+            column: req.params.columnId
         }, err => {
             res.send(err? response(false, err) : response(true));
         });
