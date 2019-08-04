@@ -17,20 +17,26 @@ function ping() {
 }
 
 function populateTerms() {
+    const terms = require("./populateDatabase/populateTerms");
+    terms();
     setInterval(() => {
-        require("./populateDatabase/populateTerms")();
+        terms();
     }, TERM_TIMER);
 }
 
 function populateSubjects() {
+    const subjects = require("./populateDatabase/populateSubjects");
+    setTimeout(() => subjects(), 10000);
     setInterval(() => {
-        require("./populateDatabase/populateSubjects")();
+        subjects();
     }, SUBJECT_TIMER);
 }
 
 function populateCourses() {
+    const courses = require("./populateDatabase/populateCourses");
+    setTimeout(() => courses(), 20000);
     setInterval(() => {
-        require("./populateDatabase/populateCourses")();
+        courses();
     }, COURSE_TIMER);
 }
 
