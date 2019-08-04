@@ -7,9 +7,17 @@ const COURSE_TIMER = 604800000; // 1 week
 
 const logger = require("./../src/logger");
 const env = process.env.NODE_ENV || "development";
+const clientHost = require("./../config/db")[env].clientHost;
 const host = require("./../config/db")[env].host;
 
-function ping() {
+function pingClient() {
+    const axios = require("axios");
+    setInterval(() => {
+        axios.get(clientHost + "/");
+    }, PING_TIMER);
+}
+
+function pingServer() {
     const axios = require("axios");
     setInterval(() => {
         axios.get(host + "/");
@@ -36,7 +44,8 @@ function populateCourses() {
 
 module.exports = () => {
     logger.info("Running database population scripts.");
-    ping();
+    pingClient();
+    pingServer();
     populateTerms();
     populateSubjects();
     populateCourses();
