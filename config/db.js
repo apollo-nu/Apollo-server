@@ -8,7 +8,7 @@ module.exports = {
     },
     "production":{
         "host":"https://apollo-nu-proxy.herokuapp.com/api",
-        "clientHost":"https://apollo-nu-proxy.herokuapp.com/client",
+        "clientHost":"https://apollo-nu-proxy.herokuapp.com/",
         "database":`mongodb+srv://prod:${process.env.MONGO_PW_PROD}@apollo-oq2zz.mongodb.net/prod?retryWrites=true&w=majority`
     }
 };
