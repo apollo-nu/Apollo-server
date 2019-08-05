@@ -74,4 +74,11 @@ router.route("/login")
         });
     });
 
+router.route("/logout")
+    .all(authenticate)
+    .get((_req, res) => {
+        res.clearCookie("access-token");
+        res.send(response(true));
+    });
+
 module.exports = router;
