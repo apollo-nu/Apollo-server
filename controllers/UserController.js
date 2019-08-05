@@ -47,19 +47,23 @@ router.route("/login")
                 const body = validResponse.body.data;
                 User.findOne({email: body.email}, (err, user) => {
                     if (err) {
+                        res.clearCookie("access-token");
                         res.send(response(false, err));
                     } else if (!user) {
+                        res.clearCookie("access-token");
                         res.send(response(false, `No user with email ${body.email} found.`));
                     } else {
                         if (user.validateUser(body.password)) {
+                            const EXPIRY_TIME = 604800000; // 7 Days
                             const token = jwt.sign({
                                 id: user._id,
                                 issued: Date.now()
-                            }, 10080);
-                            const cookieOptions = process.env.NODE_ENV === "production"? {httpOnly: true, secure: true} : {};
+                            }, EXPIRY_TIME);
+                            const cookieOptions = process.env.NODE_ENV === "production"? {httpOnly: true, maxAge: EXPIRY_TIME, secure: true} : {maxAge: EXPIRY_TIME};
                             res.cookie("access-token", token, cookieOptions);
                             res.send(response(true, `User logged in.`, {id: user._id}));
                         } else {
+                            res.clearCookie("access-token");
                             res.send(response(false, "Failed to validate user."));
                         }
                     }
@@ -68,6 +72,13 @@ router.route("/login")
                 res.send(response(false, validResponse.message[0].message));
             }
         });
+    });
+
+router.route("/logout")
+    .all(authenticate)
+    .get((_req, res) => {
+        res.clearCookie("access-token");
+        res.send(response(true));
     });
 
 module.exports = router;
