@@ -4,7 +4,7 @@ const axios = require("axios");
 const logger = require("../../src/logger");
 
 const env = process.env.NODE_ENV || "development";
-const host = require("../../config/db")[env].host;
+const host = require("../../config/config")[env].host;
 
 const COURSE_API_URL = "https://api.asg.northwestern.edu/subjects";
 const APOLLO_API_URL = host + "/subjects";

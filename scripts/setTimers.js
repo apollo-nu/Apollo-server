@@ -7,20 +7,19 @@ const COURSE_TIMER = 604800000; // 1 week
 
 const logger = require("./../src/logger");
 const env = process.env.NODE_ENV || "development";
-const clientHost = require("./../config/db")[env].clientHost;
-const host = require("./../config/db")[env].host;
+const config = require("./../config/db")[env];
 
 function pingClient() {
     const axios = require("axios");
     setInterval(() => {
-        axios.get(clientHost + "/");
+        axios.get(config.clientHost + "/");
     }, PING_TIMER);
 }
 
 function pingServer() {
     const axios = require("axios");
     setInterval(() => {
-        axios.get(host + "/");
+        axios.get(config.host + "/");
     }, PING_TIMER);
 }
 

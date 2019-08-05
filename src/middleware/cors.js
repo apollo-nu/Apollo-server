@@ -1,7 +1,7 @@
 "use strict";
 
 const env = "" + process.env.NODE_ENV;
-const config = require("../../config/db")[env || "development"];
+const config = require("../../config/config")[env || "development"];
 
 module.exports = (_req, res, next) => {
     res.header("Access-Control-Allow-Origin", config.clientHost);
