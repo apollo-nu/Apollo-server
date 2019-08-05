@@ -7,7 +7,7 @@ const COURSE_TIMER = 604800000; // 1 week
 
 const logger = require("./../src/logger");
 const env = process.env.NODE_ENV || "development";
-const config = require("./../config/db")[env];
+const config = require("./../config/config")[env];
 
 function pingClient() {
     const axios = require("axios");
