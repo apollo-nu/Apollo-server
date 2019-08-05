@@ -47,8 +47,10 @@ router.route("/login")
                 const body = validResponse.body.data;
                 User.findOne({email: body.email}, (err, user) => {
                     if (err) {
+                        res.clearCookie("access-token");
                         res.send(response(false, err));
                     } else if (!user) {
+                        res.clearCookie("access-token");
                         res.send(response(false, `No user with email ${body.email} found.`));
                     } else {
                         if (user.validateUser(body.password)) {
@@ -61,6 +63,7 @@ router.route("/login")
                             res.cookie("access-token", token, cookieOptions);
                             res.send(response(true, `User logged in.`, {id: user._id}));
                         } else {
+                            res.clearCookie("access-token");
                             res.send(response(false, "Failed to validate user."));
                         }
                     }
