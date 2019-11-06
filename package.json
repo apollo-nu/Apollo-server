@@ -32,7 +32,7 @@
     "fs": "0.0.1-security",
     "helmet": "^3.20.0",
     "indicative": "^7.2.0",
-    "jshint": "^2.10.2",
+    "jshint": "^2.10.3",
     "jsonwebtoken": "^8.5.1",
     "mocha": "^6.2.0",
     "mongoose": "^5.6.9",
